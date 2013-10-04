@@ -1,8 +1,6 @@
 require_relative 'substitution_context'
 
 class HTMLSelector #:nodoc:
-  include SubstitutionContext
-
   attr_accessor :root, :selector, :equality_tests, :message
 
   alias :source :selector
