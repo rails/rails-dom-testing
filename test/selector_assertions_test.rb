@@ -1,69 +1,16 @@
 # encoding: utf-8
 
-require 'abstract_unit'
-require 'controller/fake_controllers'
+require 'rails/dom/testing/assertions/selector_assertions'
+require 'minitest/autorun'
+require 'active_support/test_case'
 
-require 'action_mailer'
-require 'action_view'
+class AssertSelectTest < ActiveSupport::TestCase
+  Assertion = Minitest::Assertion
 
-ActionMailer::Base.send(:include, ActionView::Layouts)
-ActionMailer::Base.view_paths = FIXTURE_LOAD_PATH
-
-class AssertSelectTest < ActionController::TestCase
-  Assertion = ActiveSupport::TestCase::Assertion
-
-  class AssertSelectMailer < ActionMailer::Base
-    def test(html)
-      mail :body => html, :content_type => "text/html",
-        :subject => "Test e-mail", :from => "test@test.host", :to => "test <test@test.host>"
-    end
-  end
-
-  class AssertMultipartSelectMailer < ActionMailer::Base
-    def test(options)
-      mail :subject => "Test e-mail", :from => "test@test.host", :to => "test <test@test.host>" do |format|
-        format.text { render :text => options[:text] }
-        format.html { render :text => options[:html] }
-      end
-    end
-  end
-
-  class AssertSelectController < ActionController::Base
-    def response_with=(content)
-      @content = content
-    end
-
-    def response_with(&block)
-      @update = block
-    end
-
-    def html()
-      render :text=>@content, :layout=>false, :content_type=>Mime::HTML
-      @content = nil
-    end
-
-    def xml()
-      render :text=>@content, :layout=>false, :content_type=>Mime::XML
-      @content = nil
-    end
-  end
-
-  tests AssertSelectController
-
-  def setup
-    super
-    ActionMailer::Base.delivery_method = :test
-    ActionMailer::Base.perform_deliveries = true
-    ActionMailer::Base.deliveries = []
-  end
-
-  def teardown
-    super
-    ActionMailer::Base.deliveries.clear
-  end
+  include Rails::Dom::Testing::Assertions::SelectorAssertions
 
   def assert_failure(message, &block)
-    e = assert_raise(Assertion, &block)
+    e = assert_raises(Assertion, &block)
     assert_match(message, e.message) if Regexp === message
     assert_equal(message, e.message) if String === message
   end
@@ -318,39 +265,20 @@ EOF
     end
   end
 
-  #
-  # Test assert_select_email
-  #
-
-  def test_assert_select_email
-    assert_raise(Assertion) { assert_select_email {} }
-    AssertSelectMailer.test("<div><p>foo</p><p>bar</p></div>").deliver
-    assert_select_email do
-      assert_select "div:root" do
-        assert_select "p:first-child", "foo"
-        assert_select "p:last-child", "bar"
-      end
-    end
-  end
-
-  def test_assert_select_email_multipart
-    AssertMultipartSelectMailer.test(:html => "<div><p>foo</p><p>bar</p></div>", :text => 'foo bar').deliver
-    assert_select_email do
-      assert_select "div:root" do
-        assert_select "p:first-child", "foo"
-        assert_select "p:last-child", "bar"
-      end
-    end
-  end
-
   protected
+    class FakeReponse
+      attr_accessor :body, :content_type
+
+      def initialize(content_type, body)
+        @content_type, @body = content_type, body
+      end
+    end
+
     def render_html(html)
-      @controller.response_with = html
-      get :html
+      @reponse = FakeReponse.new(:html, html)
     end
 
     def render_xml(xml)
-      @controller.response_with = xml
-      get :xml
+      @response = FakeReponse.new(:xml, xml)
     end
 end
