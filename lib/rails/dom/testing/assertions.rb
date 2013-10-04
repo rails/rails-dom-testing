@@ -1,9 +1,12 @@
+require 'active_support/concern'
+require 'loofah'
+
 module Rails
   module Dom
     module Testing
       module Assertions
-        autoload :DomAssertions, 'assertions/dom_assertions'
-        autoload :SelectorAssertions, 'assertions/selector_assertions'
+        autoload :DomAssertions, 'rails/dom/testing/assertions/dom_assertions'
+        autoload :SelectorAssertions, 'rails/dom/testing/assertions/selector_assertions'
 
         extend ActiveSupport::Concern
 
