@@ -1,12 +1,10 @@
 require 'active_support/deprecation'
-require 'rails/dom/testing/assertions/selector_assertions/html-selector'
+require_relative 'selector_assertions/html_selector'
 
 module Rails
   module Dom
     module Testing
       module Assertions
-        NO_STRIP = %w{pre script style textarea}
-
         # Adds the +assert_select+ method for use in Rails functional
         # test cases, which can be used to make assertions on the response HTML of a controller
         # action. You can also call +assert_select+ within another +assert_select+ to
