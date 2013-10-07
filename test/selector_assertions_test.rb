@@ -271,7 +271,7 @@ EOF
   end
 
   protected
-    class FakeReponse
+    class FakeResponse
       attr_accessor :body, :content_type
 
       def initialize(content_type, body)
@@ -289,6 +289,6 @@ EOF
 
     def fake_render(content_type, content)
       @html_document = nil # a call to render removes previous document
-      @response = FakeReponse.new(content_type, content)
+      @response = FakeResponse.new(content_type, content)
     end
 end
