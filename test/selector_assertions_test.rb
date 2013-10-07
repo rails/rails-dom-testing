@@ -1,9 +1,7 @@
 # encoding: utf-8
 
-require 'loofah'
+require 'test_helper'
 require 'rails/dom/testing/assertions/selector_assertions'
-require 'minitest/autorun'
-require 'active_support/test_case'
 
 class AssertSelectTest < ActiveSupport::TestCase
   Assertion = Minitest::Assertion
