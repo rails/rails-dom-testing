@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+require 'loofah'
 require 'rails/dom/testing/assertions/selector_assertions'
 require 'minitest/autorun'
 require 'active_support/test_case'
@@ -13,6 +14,10 @@ class AssertSelectTest < ActiveSupport::TestCase
     e = assert_raises(Assertion, &block)
     assert_match(message, e.message) if Regexp === message
     assert_equal(message, e.message) if String === message
+  end
+
+  def setup
+    @response = nil
   end
 
   #
@@ -275,7 +280,7 @@ EOF
     end
 
     def render_html(html)
-      @reponse = FakeReponse.new(:html, html)
+      @response = FakeReponse.new(:html, html)
     end
 
     def render_xml(xml)
