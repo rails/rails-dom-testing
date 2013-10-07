@@ -280,10 +280,15 @@ EOF
     end
 
     def render_html(html)
-      @response = FakeReponse.new(:html, html)
+      fake_render(:html, html)
     end
 
     def render_xml(xml)
-      @response = FakeReponse.new(:xml, xml)
+      fake_render(:xml, xml)
+    end
+
+    def fake_render(content_type, content)
+      @html_document = nil # a call to render removes previous document
+      @response = FakeReponse.new(content_type, content)
     end
 end
