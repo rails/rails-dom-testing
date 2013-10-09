@@ -1,0 +1,1 @@
+require 'rail/dom/testing/assertions'
