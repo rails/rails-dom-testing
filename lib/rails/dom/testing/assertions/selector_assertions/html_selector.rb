@@ -6,10 +6,8 @@ class HTMLSelector #:nodoc:
 
   alias :source :selector
 
-  def initialize(selected, page, args)
-    # Start with possible optional element followed by mandatory selector.
-    @selector_is_second_argument = false
-    @root = determine_root_from(args.first, page, selected)
+  def initialize(root, args)
+    @root = root
     @selector = extract_selector(args)
 
     @equality_tests = equality_tests_from(args.shift)
@@ -17,6 +15,12 @@ class HTMLSelector #:nodoc:
 
     if args.shift
       raise ArgumentError, "Not expecting that last argument, you either have too many arguments, or they're the wrong type"
+    end
+  end
+
+  class << self
+    def can_select_from?(selector)
+      selector.respond_to?(:css)
     end
   end
 
@@ -48,25 +52,8 @@ class HTMLSelector #:nodoc:
     Nokogiri::XML::NodeSet.new(matches.document, remaining)
   end
 
-  def determine_root_from(root_or_selector, page, previous_selection = nil)
-    if root_or_selector == nil
-      raise ArgumentError, "First argument is either selector or element to select, but nil found. Perhaps you called assert_select with an element that does not exist?"
-    elsif root_or_selector.respond_to?(:css)
-      @selector_is_second_argument = true
-      root_or_selector
-    elsif previous_selection
-      if previous_selection.is_a?(Array)
-        Nokogiri::XML::NodeSet.new(previous_selection[0].document, previous_selection)
-      else
-        previous_selection
-      end
-    else
-      page
-    end
-  end
-
   def extract_selector(values)
-    selector = @selector_is_second_argument ? values.shift(2).last : values.shift
+    selector = values.shift
     unless selector.is_a? String
       raise ArgumentError, "Expecting a selector as the first argument"
     end

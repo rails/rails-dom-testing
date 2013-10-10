@@ -53,7 +53,7 @@ module Rails
         def css_select(*args)
           raise ArgumentError, "you at least need a selector argument" if args.empty?
 
-          root = args.size == 1 ? response_from_page : args.shift
+          root = args.size == 1 ? html_document.root : args.shift
           selector = args.first
 
           catch_invalid_selector do
@@ -159,7 +159,8 @@ module Rails
         def assert_select(*args, &block)
           @selected ||= nil
 
-          selector = HTMLSelector.new(@selected, response_from_page, args)
+          root = determine_root_from(args, @selected)
+          selector = HTMLSelector.new(root, args)
 
           matches = nil
           catch_invalid_selector do
@@ -168,16 +169,7 @@ module Rails
             assert_size_match!(matches.size, selector.equality_tests, selector.source, selector.message)
           end
 
-          # Set @selected to allow nested assert_select.
-          # Can be nested several levels deep.
-          if block_given? && !matches.empty?
-            begin
-              in_scope, @selected = @selected, matches
-              yield matches
-            ensure
-              @selected = in_scope
-            end
-          end
+          nest_selection(matches, &block) if block_given? && !matches.empty?
 
           matches
         end
@@ -245,17 +237,14 @@ module Rails
           content = elements.map do |elem|
             elem.children.select(&:cdata?).map(&:content)
           end.join
-          selected = Loofah.fragment(content)
 
-          begin
-            old_selected, @selected = @selected, selected
+          selected = Loofah.fragment(content)
+          nest_selection(selected) do
             if content.empty?
               yield selected
             else
               assert_select ":root", &block
             end
-          ensure
-            @selected = old_selected
           end
         end
 
@@ -321,8 +310,33 @@ module Rails
             end
           end
 
-          def response_from_page
-            html_document.root
+          def determine_root_from(args, previous_selection = nil)
+            possible_root = args.first
+            if possible_root == nil
+              raise ArgumentError, "First argument is either selector or element to select, but nil found. Perhaps you called assert_select with an element that does not exist?"
+            elsif HTMLSelector.can_select_from?(possible_root)
+              args.shift # remove the root, so selector is the first argument
+              possible_root
+            elsif previous_selection
+              if previous_selection.is_a?(Array)
+                Nokogiri::XML::NodeSet.new(previous_selection[0].document, previous_selection)
+              else
+                previous_selection
+              end
+            else
+              html_document.root
+            end
+          end
+
+          def nest_selection(selection)
+            # Set @selected to allow nested assert_select.
+            # Can be nested several levels deep.
+            begin
+              old_selected, @selected = @selected, selection
+              yield @selected
+            ensure
+              @selected = old_selected
+            end
           end
         end
       end
