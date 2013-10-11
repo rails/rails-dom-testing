@@ -18,11 +18,16 @@ module Rails
         # * +assert_select_encoded+ - Assertions on HTML encoded inside XML, for example for dealing with feed item descriptions.
         # * +assert_select_email+ - Assertions on the HTML body of an e-mail.
         module SelectorAssertions
+
         # Select and return all matching elements.
-      #
-        # If called with a single argument, uses that argument as a selector
-        # to match all elements of the current page. Returns an empty
-        # Nokogiri::XML::NodeSet if no match is found.
+        #
+        # If called with a single argument, uses that argument as a selector.
+        # Called without an element +css_select+ selects from
+        # the element returned in +document_root_element+
+        #
+        # The default implementation of +document_root_element+ raises an exception explaining this.
+        #
+        # Returns an empty Nokogiri::XML::NodeSet if no match is found.
         #
         # If called with two arguments, uses the first argument as the root
         # element and the second argument as the selector. Attempts to match the
@@ -53,7 +58,7 @@ module Rails
         def css_select(*args)
           raise ArgumentError, "you at least need a selector argument" if args.empty?
 
-          root = args.size == 1 ? html_document.root : args.shift
+          root = args.size == 1 ? document_root_element : args.shift
           selector = args.first
 
           catch_invalid_selector do
@@ -71,8 +76,11 @@ module Rails
         # starting from (and including) that element and all its children in
         # depth-first order.
         #
-        # If no element is specified, calling +assert_select+ selects from the
-        # response HTML unless +assert_select+ is called from within an +assert_select+ block.
+        # If no element is specified +assert_select+ selects from
+        # the element returned in +document_root_element+
+        # unless +assert_select+ is called from within an +assert_select+ block.
+        # Override +document_root_element+ to tell +assert_select+ what to select from.
+        # The default implementation raises an exception explaining this.
         #
         # When called with a block +assert_select+ passes an array of selected elements
         # to the block. Calling +assert_select+ from the block, with no element specified,
@@ -279,6 +287,10 @@ module Rails
 
         protected
 
+          def document_root_element
+            raise NotImplementedError, "Implementing document_root_element makes assert_select work without needing to specify an element to select from."
+          end
+
           def catch_invalid_selector
             begin
               yield
@@ -301,15 +313,6 @@ module Rails
             end
           end
 
-          # +html_document+ is used in testing/integration.rb
-          def html_document
-            @html_document ||= if @response.content_type =~ /xml$/
-              Loofah.xml_document(@response.body)
-            else
-              Loofah.document(@response.body)
-            end
-          end
-
           def determine_root_from(args, previous_selection = nil)
             possible_root = args.first
             if possible_root == nil
@@ -324,7 +327,7 @@ module Rails
                 previous_selection
               end
             else
-              html_document.root
+              document_root_element
             end
           end
 

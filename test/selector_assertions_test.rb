@@ -14,10 +14,6 @@ class AssertSelectTest < ActiveSupport::TestCase
     assert_equal(message, e.message) if String === message
   end
 
-  def setup
-    @response = nil
-  end
-
   #
   # Test assert select.
   #
@@ -269,14 +265,6 @@ EOF
   end
 
   protected
-    class FakeResponse
-      attr_accessor :body, :content_type
-
-      def initialize(content_type, body)
-        @content_type, @body = content_type, body
-      end
-    end
-
     def render_html(html)
       fake_render(:html, html)
     end
@@ -286,7 +274,14 @@ EOF
     end
 
     def fake_render(content_type, content)
-      @html_document = nil # a call to render removes previous document
-      @response = FakeResponse.new(content_type, content)
+      @html_document = if content_type == :xml
+        Loofah.xml_document(content)
+      else
+        Loofah.document(content)
+      end
+    end
+
+    def document_root_element
+      @html_document.root
     end
 end
