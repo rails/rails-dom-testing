@@ -54,9 +54,11 @@ class HTMLSelector #:nodoc:
 
   def extract_selector(values)
     selector = values.shift
+
     unless selector.is_a? String
       raise ArgumentError, "Expecting a selector as the first argument"
     end
+
     context.substitute!(selector, values)
   end
 
