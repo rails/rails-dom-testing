@@ -61,30 +61,30 @@ class HTMLSelector #:nodoc:
   end
 
   def equality_tests_from(comparator)
-      comparisons = {}
-      case comparator
-        when Hash
-          comparisons = comparator
-        when String, Regexp
-          comparisons[:text] = comparator
-        when Integer
-          comparisons[:count] = comparator
-        when Range
-          comparisons[:minimum] = comparator.begin
-          comparisons[:maximum] = comparator.end
-        when FalseClass
-          comparisons[:count] = 0
-        when NilClass, TrueClass
-          comparisons[:minimum] = 1
-        else raise ArgumentError, "I don't understand what you're trying to match"
-      end
+    comparisons = {}
+    case comparator
+      when Hash
+        comparisons = comparator
+      when String, Regexp
+        comparisons[:text] = comparator
+      when Integer
+        comparisons[:count] = comparator
+      when Range
+        comparisons[:minimum] = comparator.begin
+        comparisons[:maximum] = comparator.end
+      when FalseClass
+        comparisons[:count] = 0
+      when NilClass, TrueClass
+        comparisons[:minimum] = 1
+      else raise ArgumentError, "I don't understand what you're trying to match"
+    end
 
-      # By default we're looking for at least one match.
-      if comparisons[:count]
-        comparisons[:minimum] = comparisons[:maximum] = comparisons[:count]
-      else
-        comparisons[:minimum] ||= 1
-      end
+    # By default we're looking for at least one match.
+    if comparisons[:count]
+      comparisons[:minimum] = comparisons[:maximum] = comparisons[:count]
+    else
+      comparisons[:minimum] ||= 1
+    end
     comparisons
   end
 
