@@ -306,7 +306,7 @@ module Rails
 
             message ||= %(Expected #{count_description(min, max, count)} matching "#{css_selector}", found #{size}.)
             if count
-              assert_equal size, count, message
+              assert_equal count, size, message
             else
               assert_operator size, :>=, min, message if min
               assert_operator size, :<=, max, message if max
