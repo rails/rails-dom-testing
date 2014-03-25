@@ -62,11 +62,7 @@ module Rails
           selector = args.first
 
           catch_invalid_selector do
-            root.css(selector).tap do |matches|
-              if matches.empty? && root.matches?(selector)
-                return Nokogiri::XML::NodeSet.new(root.document, [root])
-              end
-            end
+            nodeset(root).css(selector)
           end
         end
 
@@ -229,20 +225,11 @@ module Rails
         #     end
         #   end
         def assert_select_encoded(element = nil, &block)
-          case element
-            when Array
-              elements = element
-            when Nokogiri::XML::Node
-              elements = [element]
-            when nil
-              unless elements = @selected
-                raise ArgumentError, "First argument is optional, but must be called from a nested assert_select"
-              end
-            else
-              raise ArgumentError, "Argument is optional, and may be node or array of nodes"
+          if !element && !@selected
+            raise ArgumentError, "Element is required when called from a nonnested assert_select"
           end
 
-          content = elements.map do |elem|
+          content = nodeset(element || @selected).map do |elem|
             elem.children.select(&:cdata?).map(&:content)
           end.join
 
@@ -321,11 +308,7 @@ module Rails
               args.shift # remove the root, so selector is the first argument
               possible_root
             elsif previous_selection
-              if previous_selection.is_a?(Array)
-                Nokogiri::XML::NodeSet.new(previous_selection[0].document, previous_selection)
-              else
-                previous_selection
-              end
+              previous_selection
             else
               document_root_element
             end
@@ -339,6 +322,14 @@ module Rails
               yield @selected
             ensure
               @selected = old_selected
+            end
+          end
+
+          def nodeset(node)
+            if node.is_a?(Nokogiri::XML::NodeSet)
+              node
+            else
+              Nokogiri::XML::NodeSet.new(node.document, [node])
             end
           end
         end
