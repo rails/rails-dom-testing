@@ -1,4 +1,5 @@
 # Rails::Dom::Testing
+[![Build Status](https://travis-ci.org/kaspth/rails-dom-testing.svg)](https://travis-ci.org/kaspth/rails-dom-testing)
 
 TODO: Write a gem description
 
