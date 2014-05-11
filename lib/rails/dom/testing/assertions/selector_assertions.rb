@@ -233,7 +233,7 @@ module Rails
             elem.children.select(&:cdata?).map(&:content)
           end.join
 
-          selected = Loofah.fragment(content)
+          selected = Nokogiri::HTML::DocumentFragment.parse(content)
           nest_selection(selected) do
             if content.empty?
               yield selected
@@ -265,7 +265,7 @@ module Rails
           deliveries.each do |delivery|
             (delivery.parts.empty? ? [delivery] : delivery.parts).each do |part|
               if part["Content-Type"].to_s =~ /^text\/html\W/
-                root = Loofah.fragment(part.body.to_s)
+                root = Nokogiri::HTML::DocumentFragment.parse(part.body.to_s)
                 assert_select root, ":root", &block
               end
             end
