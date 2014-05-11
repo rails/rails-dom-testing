@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = Dir["test/**/*"]
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "nokogiri", "~> 1.5.9"
+  spec.add_dependency "nokogiri", "~> 1.6.0"
   spec.add_dependency "activesupport"
 
   spec.add_development_dependency "bundler", "~> 1.3"
