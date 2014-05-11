@@ -1,5 +1,5 @@
 require 'active_support/concern'
-require 'loofah'
+require 'nokogiri'
 
 module Rails
   module Dom
