@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Rafael Mendonça França", "Kasper Timm Hansen"]
   spec.email         = ["rafaelmfranca@gmail.com", "kaspth@gmail.com"]
   spec.description   = %q{ Dom and Selector assertions for Rails applications }
-  spec.summary       = %q{ This gem can compare doms and assert certain elements exists in doms using Loofah. }
+  spec.summary       = %q{ This gem can compare doms and assert certain elements exists in doms using Nokogiri. }
   spec.homepage      = "https://github.com/kaspth/rails-dom-testing"
   spec.license       = "MIT"
 
@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = Dir["test/**/*"]
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "loofah", "~> 1.2.1"
+  spec.add_dependency "nokogiri", "~> 1.5.9"
   spec.add_dependency "activesupport"
 
   spec.add_development_dependency "bundler", "~> 1.3"
