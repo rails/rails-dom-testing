@@ -8,7 +8,7 @@ module Rails
           #   # assert that the referenced method generates the appropriate HTML string
           #   assert_dom_equal '<a href="http://www.example.com">Apples</a>', link_to("Apples", "http://www.example.com")
           def assert_dom_equal(expected, actual, message = nil)
-            expected_dom, actual_dom = Loofah.fragment(expected), Loofah.fragment(actual)
+            expected_dom, actual_dom = fragment(expected), fragment(actual)
             message ||= "Expected: #{expected}\nActual: #{actual}"
             assert compare_doms(expected_dom, actual_dom), message
           end
@@ -18,7 +18,7 @@ module Rails
           #   # assert that the referenced method does not generate the specified HTML string
           #   assert_dom_not_equal '<a href="http://www.example.com">Apples</a>', link_to("Oranges", "http://www.example.com")
           def assert_dom_not_equal(expected, actual, message = nil)
-            expected_dom, actual_dom = Loofah.fragment(expected), Loofah.fragment(actual)
+            expected_dom, actual_dom = fragment(expected), fragment(actual)
             message ||= "Expected: #{expected}\nActual: #{actual}"
             assert_not compare_doms(expected_dom, actual_dom), message
           end
@@ -61,6 +61,12 @@ module Rails
 
             def equal_attribute?(attr, other_attr)
               attr.name == other_attr.name && attr.value == other_attr.value
+            end
+
+          private
+
+            def fragment(text)
+              Nokogiri::HTML::DocumentFragment.parse(text)
             end
         end
       end
