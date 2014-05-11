@@ -275,9 +275,9 @@ EOF
 
     def fake_render(content_type, content)
       @html_document = if content_type == :xml
-        Loofah.xml_document(content)
+        Nokogiri::XML::Document.parse(content)
       else
-        Loofah.document(content)
+        Nokogiri::HTML::Document.parse(content)
       end
     end
 
