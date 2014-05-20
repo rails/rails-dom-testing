@@ -1,5 +1,5 @@
 # Rails::Dom::Testing
-[![Build Status](https://travis-ci.org/kaspth/rails-dom-testing.svg)](https://travis-ci.org/kaspth/rails-dom-testing)
+[![Build Status](https://travis-ci.org/rails/rails-dom-testing.svg)](https://travis-ci.org/rails/rails-dom-testing)
 
 This gem is responsible for comparing HTML doms and asserting that DOM elements are present in Rails applications.
 Doms are compared via `assert_dom_equal` and `assert_dom_not_equal`.
