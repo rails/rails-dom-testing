@@ -169,12 +169,6 @@ class AssertSelectTest < ActiveSupport::TestCase
     end
   end
 
-  def test_select_with_xml_namespace_attributes
-    skip "Nokogiri doesn't recognize this the xmlns:special as a namespace. Perhaps it's because it isn't on the root node?"
-    render_html %Q{<link xmlns:special="http://nowhere.com"></link>}
-    assert_nothing_raised { assert_select %(special|link) }
-  end
-
   #
   # Test css_select.
   #
