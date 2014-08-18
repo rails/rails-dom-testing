@@ -1,4 +1,3 @@
-require 'active_support/dependencies/autoload' # for html-scanner
 require 'rails/deprecated_sanitizer/html-scanner'
 
 module Rails
