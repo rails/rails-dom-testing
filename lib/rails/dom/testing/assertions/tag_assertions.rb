@@ -1,3 +1,4 @@
+require 'active_support/deprecation'
 require 'rails/deprecated_sanitizer/html-scanner'
 
 module Rails
@@ -96,8 +97,10 @@ module Rails
           # that allow optional closing tags (p, li, td). <em>You must explicitly
           # close all of your tags to use these assertions.</em>
           def assert_tag(*opts)
+            ActiveSupport::Deprecation.warn("assert_tag is deprecated and will be removed at Rails 5. Use assert_select to get the same feature.")
+
             opts = opts.size > 1 ? opts.last.merge({ tag: opts.first.to_s }) : opts.first
-            tag = find_tag(opts)
+            tag = _find_tag(opts)
 
             assert tag, "expected tag, but no tag found matching #{opts.inspect} in:\n#{@response.body.inspect}"
           end
@@ -116,21 +119,31 @@ module Rails
           #   assert_no_tag tag: "p",
           #              children: { count: 1..3, only: { tag: "img" } }
           def assert_no_tag(*opts)
+            ActiveSupport::Deprecation.warn("assert_no_tag is deprecated and will be removed at Rails 5. Use assert_select to get the same feature.")
+
             opts = opts.size > 1 ? opts.last.merge({ tag: opts.first.to_s }) : opts.first
-            tag = find_tag(opts)
+            tag = _find_tag(opts)
 
             assert !tag, "expected no tag, but found tag matching #{opts.inspect} in:\n#{@response.body.inspect}"
           end
 
           def find_tag(conditions)
-            html_scanner_document.find(conditions)
+            ActiveSupport::Deprecation.warn("find_tag is deprecated and will be removed at Rails 5 without replacement.")
+
+            _find_tag(conditions)
           end
 
           def find_all_tag(conditions)
+            ActiveSupport::Deprecation.warn("find_all_tag is deprecated and will be removed at Rails 5 without replacement. Use assert_select to get the same feature.")
+
             html_scanner_document.find_all(conditions)
           end
 
           private
+            def _find_tag(conditions)
+              html_scanner_document.find(conditions)
+            end
+
             def html_scanner_document
               xml = @response.content_type =~ /xml$/
               @html_document ||= HTML::Document.new(@response.body, false, xml)
