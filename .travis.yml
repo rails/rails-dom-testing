@@ -1,9 +1,10 @@
 rvm:
   - 1.9.3
   - 2.0.0
-  - 2.1.1
+  - 2.1
   - rbx-2
   - jruby
+  - trunk
 matrix:
   fast_finish: true
 notifications:
@@ -13,3 +14,8 @@ notifications:
     on_failure: always
     channels:
       - "irc.freenode.org#rails-contrib"
+  campfire:
+    on_success: change
+    on_failure: always
+    rooms:
+      - secure: "HnqK+r2/SLv2Z1XMkL0oNO0w/xaUn9cGHpr2mGDNnk+SUz1XBO2bu5c0ykyAVnLienFPCDExX3RYwTMNvC4AhkAR8DK0v4FD+0g/dMy2j1wGzQlNtqF2B4EbRpVpZtmM3hK6dDNRR3V/zipqTkut00PoFPp/Bzm7DoH/w/MIPBY="
