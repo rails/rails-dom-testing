@@ -1,4 +1,4 @@
-Copyright (c) 2013 Timm
+Copyright (c) 2013 Kasper Timm Hansen
 
 MIT License
 
