@@ -135,6 +135,18 @@ class AssertSelectTest < ActiveSupport::TestCase
     end
   end
 
+  def test_assert_select_root_html
+    render_html '<a></a>'
+
+    assert_select 'a'
+  end
+
+  def test_assert_select_root_xml
+    render_xml '<rss version="2.0"></rss>'
+
+    assert_select 'rss'
+  end
+
   def test_nested_assert_select
     render_html %Q{<div id="1">foo</div><div id="2">foo</div>}
     assert_select "div" do |elements|
@@ -241,6 +253,7 @@ class AssertSelectTest < ActiveSupport::TestCase
   </channel>
 </rss>
 EOF
+
     assert_select "channel item description" do
 
       assert_select_encoded do
