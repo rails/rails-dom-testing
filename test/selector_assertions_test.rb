@@ -40,6 +40,14 @@ class AssertSelectTest < ActiveSupport::TestCase
     assert_nothing_raised    { assert_select "p", false }
   end
 
+  def test_equality_false_with_substitution
+    render_html %{<a></a>}
+
+    assert_nothing_raised do
+      assert_select %{a[href="http://example.org?query=value"]}, false
+    end
+  end
+
   def test_equality_false_message
     render_html %Q{<div id="1"></div><div id="2"></div>}
     assert_failure(/Expected exactly 0 elements matching \"div\", found 2/) { assert_select "div", false }
