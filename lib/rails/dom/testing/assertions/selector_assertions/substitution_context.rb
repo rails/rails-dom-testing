@@ -5,7 +5,7 @@ class SubstitutionContext
   end
 
   def substitute!(selector, values)
-    while !values.empty? && selector.index(@substitute)
+    while !values.empty? && substitutable?(values.first) && selector.index(@substitute)
       selector.sub! @substitute, add_regex(values.shift)
     end
     selector
@@ -27,5 +27,9 @@ class SubstitutionContext
 
     def last_id
       @regexes.count - 1
+    end
+
+    def substitutable?(value)
+      value.is_a?(String) || value.is_a?(Regexp)
     end
 end
