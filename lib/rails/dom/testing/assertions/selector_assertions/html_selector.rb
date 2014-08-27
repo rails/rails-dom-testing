@@ -60,6 +60,7 @@ class HTMLSelector #:nodoc:
     end
 
     context.substitute!(selector, values)
+    selector
   end
 
   def equality_tests_from(comparator)

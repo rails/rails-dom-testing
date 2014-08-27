@@ -8,7 +8,6 @@ class SubstitutionContext
     while !values.empty? && substitutable?(values.first) && selector.index(@substitute)
       selector.sub! @substitute, substitution_id_for(values.shift)
     end
-    selector
   end
 
   def match(matches, attribute, substitution_id)
