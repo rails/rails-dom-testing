@@ -6,27 +6,23 @@ class SubstitutionContext
 
   def substitute!(selector, values)
     while !values.empty? && substitutable?(values.first) && selector.index(@substitute)
-      selector.sub! @substitute, add_regex(values.shift)
+      selector.sub! @substitute, substitution_id_for(values.shift)
     end
     selector
   end
 
-  def match(matches, attribute, id)
-    matches.find_all { |node| node[attribute] =~ @regexes[id] }
+  def match(matches, attribute, substitution_id)
+    matches.find_all { |node| node[attribute] =~ @regexes[substitution_id] }
   end
 
   private
-    def add_regex(regex)
-      if regex.is_a?(Regexp)
-        @regexes.push(regex)
-        last_id.to_s # avoid implicit conversions of Fixnum to String
+    def substitution_id_for(value)
+      if value.is_a?(Regexp)
+        @regexes << value
+        @regexes.size - 1
       else
-        regex.inspect # Nokogiri doesn't like arbitrary values without quotes, hence inspect.
-      end
-    end
-
-    def last_id
-      @regexes.count - 1
+        value
+      end.inspect # Nokogiri doesn't like arbitrary values without quotes, hence inspect.
     end
 
     def substitutable?(value)
