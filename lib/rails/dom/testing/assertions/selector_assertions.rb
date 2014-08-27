@@ -310,7 +310,7 @@ module Rails
             elsif previous_selection
               previous_selection
             else
-              document_root_element
+              nodeset document_root_element
             end
           end
 
