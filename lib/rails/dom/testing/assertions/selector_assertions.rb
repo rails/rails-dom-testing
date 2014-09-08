@@ -61,8 +61,11 @@ module Rails
           root = args.size == 1 ? document_root_element : args.shift
           selector = args.first
 
-          catch_invalid_selector do
+          begin
             nodeset(root).css(selector)
+          rescue Nokogiri::CSS::SyntaxError => e
+            ActiveSupport::Deprecation.warn("The assertion was not run because of an invalid css selector.\n#{e}", caller(2))
+            return
           end
         end
 
@@ -167,10 +170,14 @@ module Rails
           selector = HTMLSelector.new(root, args)
 
           matches = nil
-          catch_invalid_selector do
+
+          begin
             matches = selector.select
 
             assert_size_match!(matches.size, selector.equality_tests, selector.source, selector.message)
+          rescue Nokogiri::CSS::SyntaxError => e
+            ActiveSupport::Deprecation.warn("The assertion was not run because of an invalid css selector.\n#{e}", caller(2))
+            return
           end
 
           nest_selection(matches, &block) if block_given? && !matches.empty?
@@ -276,15 +283,6 @@ module Rails
 
           def document_root_element
             raise NotImplementedError, "Implementing document_root_element makes assert_select work without needing to specify an element to select from."
-          end
-
-          def catch_invalid_selector
-            begin
-              yield
-            rescue Nokogiri::CSS::SyntaxError => e
-              ActiveSupport::Deprecation.warn("The assertion was not run because of an invalid css selector.\n#{e}")
-              return
-            end
           end
 
           # +equals+ must contain :minimum, :maximum and :count keys
