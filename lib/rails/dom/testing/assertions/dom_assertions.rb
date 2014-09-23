@@ -40,7 +40,8 @@ module Rails
 
               if child.element?
                 child.name == other_child.name &&
-                    equal_attribute_nodes?(child.attribute_nodes, other_child.attribute_nodes)
+                    equal_attribute_nodes?(child.attribute_nodes, other_child.attribute_nodes) &&
+                    compare_doms(child, other_child)
               else
                 child.to_s == other_child.to_s
               end
