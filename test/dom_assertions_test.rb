@@ -40,4 +40,11 @@ class DomAssertionsTest < ActiveSupport::TestCase
 
     assert_equal e.message, message
   end
+
+  def test_unequal_dom_attributes_in_children
+    assert_dom_not_equal(
+      %{<a><b c="1" /></a>},
+      %{<a><b c="2" /></a>}
+    )
+  end
 end
