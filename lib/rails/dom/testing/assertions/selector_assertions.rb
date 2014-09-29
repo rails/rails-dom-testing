@@ -62,7 +62,9 @@ module Rails
           selector = args.first
 
           begin
-            nodeset(root).css(selector)
+            root.css(selector).tap do |matches|
+              return nodeset(root).css(selector) if matches.empty?
+            end
           rescue Nokogiri::CSS::SyntaxError => e
             ActiveSupport::Deprecation.warn("The assertion was not run because of an invalid css selector.\n#{e}", caller(2))
             return
@@ -308,7 +310,7 @@ module Rails
             elsif previous_selection
               previous_selection
             else
-              nodeset document_root_element
+              document_root_element
             end
           end
 
