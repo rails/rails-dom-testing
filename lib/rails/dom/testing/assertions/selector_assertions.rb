@@ -309,12 +309,10 @@ module Rails
           def nest_selection(selection)
             # Set @selected to allow nested assert_select.
             # Can be nested several levels deep.
-            begin
-              old_selected, @selected = @selected, selection
-              yield @selected
-            ensure
-              @selected = old_selected
-            end
+            old_selected, @selected = @selected, selection
+            yield @selected
+          ensure
+            @selected = old_selected
           end
 
           def nodeset(node)
