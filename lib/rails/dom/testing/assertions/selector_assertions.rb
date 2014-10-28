@@ -258,7 +258,7 @@ module Rails
           end
         end
 
-        protected
+        private
           include CountDescripable
 
           def document_root_element
