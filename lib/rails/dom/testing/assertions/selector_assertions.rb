@@ -276,7 +276,8 @@ module Rails
         protected
 
           def document_root_element
-            raise NotImplementedError, "Implementing document_root_element makes assert_select work without needing to specify an element to select from."
+            raise NotImplementedError, 'Implementing document_root_element makes ' \
+              'assert_select work without needing to specify an element to select from.'
           end
 
           # +equals+ must contain :minimum, :maximum and :count keys
@@ -294,8 +295,11 @@ module Rails
 
           def determine_root_from(args, previous_selection = nil)
             possible_root = args.first
+
             if possible_root == nil
-              raise ArgumentError, "First argument is either selector or element to select, but nil found. Perhaps you called assert_select with an element that does not exist?"
+              raise ArgumentError, 'First argument is either selector or element ' \
+                'to select, but nil found. Perhaps you called assert_select with ' \
+                'an element that does not exist?'
             elsif HTMLSelector.can_select_from?(possible_root)
               args.shift # remove the root, so selector is the first argument
               possible_root
