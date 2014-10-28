@@ -258,13 +258,13 @@ module Rails
           end
         end
 
+        def document_root_element
+          raise NotImplementedError, 'Implementing document_root_element makes ' \
+            'assert_select work without needing to specify an element to select from.'
+        end
+
         private
           include CountDescripable
-
-          def document_root_element
-            raise NotImplementedError, 'Implementing document_root_element makes ' \
-              'assert_select work without needing to specify an element to select from.'
-          end
 
           # +equals+ must contain :minimum, :maximum and :count keys
           def assert_size_match!(size, equals, css_selector, message = nil)

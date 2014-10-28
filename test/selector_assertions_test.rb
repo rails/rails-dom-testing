@@ -284,6 +284,10 @@ EOF
     assert_select 'body', 0
   end
 
+  def document_root_element
+    @html_document
+  end
+
   protected
     def render_html(html)
       fake_render(:html, html)
@@ -299,9 +303,5 @@ EOF
       else
         Nokogiri::HTML::DocumentFragment.parse(content)
       end
-    end
-
-    def document_root_element
-      @html_document
     end
 end

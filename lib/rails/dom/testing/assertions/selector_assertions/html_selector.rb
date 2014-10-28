@@ -63,7 +63,7 @@ class HTMLSelector #:nodoc:
     elsif previous_selection
       previous_selection
     else
-      rootable.send :document_root_element
+      rootable.document_root_element
     end
   end
 
