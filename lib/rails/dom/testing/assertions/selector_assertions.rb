@@ -61,14 +61,12 @@ module Rails
           root = args.size == 1 ? document_root_element : args.shift
           selector = args.first
 
-          begin
-            root.css(selector).tap do |matches|
-              return nodeset(root).css(selector) if matches.empty?
-            end
-          rescue Nokogiri::CSS::SyntaxError => e
-            ActiveSupport::Deprecation.warn("The assertion was not run because of an invalid css selector.\n#{e}", caller(2))
-            return
+          root.css(selector).tap do |matches|
+            return nodeset(root).css(selector) if matches.empty?
           end
+        rescue Nokogiri::CSS::SyntaxError => e
+          ActiveSupport::Deprecation.warn("The assertion was not run because of an invalid css selector.\n#{e}", caller(2))
+          return
         end
 
         # An assertion that selects elements and makes one or more equality tests.
