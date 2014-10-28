@@ -168,23 +168,15 @@ module Rails
         def assert_select(*args, &block)
           @selected ||= nil
 
-          root = determine_root_from(args, @selected)
-          selector = HTMLSelector.new(root, args)
-
-          matches = nil
-
-          begin
-            matches = selector.select
-
+          selector = HTMLSelector.new(determine_root_from(args, @selected), args)
+          selector.select.tap do |matches|
             assert_size_match!(matches.size, selector.equality_tests, selector.source, selector.message)
-          rescue Nokogiri::CSS::SyntaxError => e
-            ActiveSupport::Deprecation.warn("The assertion was not run because of an invalid css selector.\n#{e}", caller(2))
-            return
+
+            nest_selection(matches, &block) if block_given? && !matches.empty?
           end
-
-          nest_selection(matches, &block) if block_given? && !matches.empty?
-
-          matches
+        rescue Nokogiri::CSS::SyntaxError => e
+          ActiveSupport::Deprecation.warn("The assertion was not run because of an invalid css selector.\n#{e}", caller(2))
+          return
         end
 
         def count_description(min, max, count) #:nodoc:
