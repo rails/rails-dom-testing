@@ -1,4 +1,5 @@
 require 'active_support/deprecation'
+require_relative 'selector_assertions/count_describable'
 require_relative 'selector_assertions/html_selector'
 
 module Rails
@@ -177,20 +178,6 @@ module Rails
           return
         end
 
-        def count_description(min, max, count) #:nodoc:
-          pluralize = lambda {|word, quantity| word << (quantity == 1 ? '' : 's')}
-
-          if min && max && (max != min)
-            "between #{min} and #{max} elements"
-          elsif min && max && max == min && count
-            "exactly #{count} #{pluralize['element', min]}"
-          elsif min && !(min == 1 && max == 1)
-            "at least #{min} #{pluralize['element', min]}"
-          elsif max
-            "at most #{max} #{pluralize['element', max]}"
-          end
-        end
-
         # Extracts the content of an element, treats it as encoded HTML and runs
         # nested assertion on it.
         #
@@ -272,6 +259,7 @@ module Rails
         end
 
         protected
+          include CountDescripable
 
           def document_root_element
             raise NotImplementedError, 'Implementing document_root_element makes ' \
