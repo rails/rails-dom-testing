@@ -1,39 +1,36 @@
 require_relative 'substitution_context'
 
 class HTMLSelector #:nodoc:
-  NO_STRIP = %w{pre script style textarea}
-  attr_accessor :root, :selector, :equality_tests, :message
+  attr_reader :selector, :tests, :message
 
-  alias :source :selector
+  def initialize(values, rootable, previous_selection = nil)
+    @values = values
+    @root = extract_root(rootable, previous_selection)
+    @selector = extract_selector
+    @tests = extract_equality_tests
+    @message = @values.shift
 
-  def initialize(root, args)
-    @root = root
-    @selector = extract_selector(args)
-
-    @equality_tests = equality_tests_from(args.shift)
-    @message = args.shift
-
-    if args.shift
+    if @values.shift
       raise ArgumentError, "Not expecting that last argument, you either have too many arguments, or they're the wrong type"
     end
   end
 
-  class << self
-    def can_select_from?(selector)
-      selector.respond_to?(:css)
-    end
+  def select
+    filter @root.css(selector, context)
   end
 
-  def select
-    filter root.css(selector, context)
-  end
+  private
+
+  NO_STRIP = %w{pre script style textarea}
+
+  mattr_reader(:context) { SubstitutionContext.new }
 
   def filter(matches)
-    match_with = equality_tests[:text] || equality_tests[:html]
+    match_with = tests[:text] || tests[:html]
     return matches if matches.empty? || !match_with
 
     content_mismatch = nil
-    text_matches = equality_tests.has_key?(:text)
+    text_matches = tests.has_key?(:text)
     regex_matching = match_with.is_a?(Regexp)
 
     remaining = matches.reject do |match|
@@ -48,24 +45,41 @@ class HTMLSelector #:nodoc:
       true
     end
 
-    self.message ||= content_mismatch if remaining.empty?
+    @message ||= content_mismatch if remaining.empty?
     Nokogiri::XML::NodeSet.new(matches.document, remaining)
   end
 
-  def extract_selector(values)
-    selector = values.shift
+  def extract_root(rootable, previous_selection)
+    possible_root = @values.first
+
+    if possible_root == nil
+      raise ArgumentError, 'First argument is either selector or element ' \
+        'to select, but nil found. Perhaps you called assert_select with ' \
+        'an element that does not exist?'
+    elsif possible_root.respond_to?(:css)
+      @values.shift # remove the root, so selector is the first argument
+      possible_root
+    elsif previous_selection
+      previous_selection
+    else
+      rootable.send :document_root_element
+    end
+  end
+
+  def extract_selector
+    selector = @values.shift
 
     unless selector.is_a? String
       raise ArgumentError, "Expecting a selector as the first argument"
     end
 
-    context.substitute!(selector, values)
+    context.substitute!(selector, @values)
     selector
   end
 
-  def equality_tests_from(comparator)
+  def extract_equality_tests
     comparisons = {}
-    case comparator
+    case comparator = @values.shift
       when Hash
         comparisons = comparator
       when String, Regexp
@@ -89,9 +103,5 @@ class HTMLSelector #:nodoc:
       comparisons[:minimum] ||= 1
     end
     comparisons
-  end
-
-  def context
-    @context ||= SubstitutionContext.new
   end
 end

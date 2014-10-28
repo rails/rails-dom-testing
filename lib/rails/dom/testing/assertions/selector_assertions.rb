@@ -167,9 +167,9 @@ module Rails
         def assert_select(*args, &block)
           @selected ||= nil
 
-          selector = HTMLSelector.new(determine_root_from(args, @selected), args)
+          selector = HTMLSelector.new(args, self, @selected)
           selector.select.tap do |matches|
-            assert_size_match!(matches.size, selector.equality_tests, selector.source, selector.message)
+            assert_size_match!(matches.size, selector.tests, selector.selector, selector.message)
 
             nest_selection(matches, &block) if block_given? && !matches.empty?
           end
@@ -276,23 +276,6 @@ module Rails
             else
               assert_operator size, :>=, min, message if min
               assert_operator size, :<=, max, message if max
-            end
-          end
-
-          def determine_root_from(args, previous_selection = nil)
-            possible_root = args.first
-
-            if possible_root == nil
-              raise ArgumentError, 'First argument is either selector or element ' \
-                'to select, but nil found. Perhaps you called assert_select with ' \
-                'an element that does not exist?'
-            elsif HTMLSelector.can_select_from?(possible_root)
-              args.shift # remove the root, so selector is the first argument
-              possible_root
-            elsif previous_selection
-              previous_selection
-            else
-              document_root_element
             end
           end
 
