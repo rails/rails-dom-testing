@@ -280,12 +280,18 @@ EOF
   end
 
   def test_body_not_present_in_empty_document
-    render_html ''
+    render_html '<div></div>'
     assert_select 'body', 0
   end
 
-  def document_root_element
-    @html_document
+  def test_body_class_can_be_tested
+    render_html '<body class="foo"></body>'
+    assert_select '.foo'
+  end
+
+  def test_body_class_can_be_tested_with_html
+    render_html '<html><body class="foo"><div></div></body></html>'
+    assert_select '.foo'
   end
 
   protected
@@ -299,9 +305,13 @@ EOF
 
     def fake_render(content_type, content)
       @html_document = if content_type == :xml
-        Nokogiri::XML::DocumentFragment.parse(content)
+        Nokogiri::XML::Document.parse(content)
       else
-        Nokogiri::HTML::DocumentFragment.parse(content)
+        Nokogiri::HTML::Document.parse(content)
       end
+    end
+
+    def document_root_element
+      @html_document.root
     end
 end

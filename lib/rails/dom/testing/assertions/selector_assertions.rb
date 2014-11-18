@@ -60,11 +60,8 @@ module Rails
           raise ArgumentError, "you at least need a selector argument" if args.empty?
 
           root = args.size == 1 ? document_root_element : args.shift
-          selector = args.first
 
-          root.css(selector).tap do |matches|
-            return nodeset(root).css(selector) if matches.empty?
-          end
+          nodeset(root).css(args.first)
         rescue Nokogiri::CSS::SyntaxError => e
           ActiveSupport::Deprecation.warn("The assertion was not run because of an invalid css selector.\n#{e}", caller(2))
           return
@@ -167,7 +164,13 @@ module Rails
         def assert_select(*args, &block)
           @selected ||= nil
 
-          selector = HTMLSelector.new(args, self, @selected)
+          selector = HTMLSelector.new(args, @selected) { nodeset document_root_element }
+
+          if selecting_no_body?(selector)
+            assert true
+            return
+          end
+
           selector.select.tap do |matches|
             assert_size_match!(matches.size, selector.tests, selector.selector, selector.message)
 
@@ -258,13 +261,13 @@ module Rails
           end
         end
 
-        def document_root_element
-          raise NotImplementedError, 'Implementing document_root_element makes ' \
-            'assert_select work without needing to specify an element to select from.'
-        end
-
         private
           include CountDescripable
+
+          def document_root_element
+            raise NotImplementedError, 'Implementing document_root_element makes ' \
+              'assert_select work without needing to specify an element to select from.'
+          end
 
           # +equals+ must contain :minimum, :maximum and :count keys
           def assert_size_match!(size, equals, css_selector, message = nil)
@@ -277,6 +280,12 @@ module Rails
               assert_operator size, :>=, min, message if min
               assert_operator size, :<=, max, message if max
             end
+          end
+
+          def selecting_no_body?(html_selector)
+            # Nokogiri gives the document a body element. Which means we can't
+            # run an assertion expecting there to not be a body.
+            html_selector.selector == 'body' && html_selector.tests[:count] == 0
           end
 
           def nest_selection(selection)

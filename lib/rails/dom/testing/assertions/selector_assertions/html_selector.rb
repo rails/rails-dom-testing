@@ -4,9 +4,9 @@ require_relative 'substitution_context'
 class HTMLSelector #:nodoc:
   attr_reader :selector, :tests, :message
 
-  def initialize(values, rootable, previous_selection = nil)
+  def initialize(values, previous_selection = nil, &root_fallback)
     @values = values
-    @root = extract_root(rootable, previous_selection)
+    @root = extract_root(previous_selection, root_fallback)
     @selector = extract_selector
     @tests = extract_equality_tests
     @message = @values.shift
@@ -50,7 +50,7 @@ class HTMLSelector #:nodoc:
     Nokogiri::XML::NodeSet.new(matches.document, remaining)
   end
 
-  def extract_root(rootable, previous_selection)
+  def extract_root(previous_selection, root_fallback)
     possible_root = @values.first
 
     if possible_root == nil
@@ -63,7 +63,7 @@ class HTMLSelector #:nodoc:
     elsif previous_selection
       previous_selection
     else
-      rootable.document_root_element
+      root_fallback.call
     end
   end
 
