@@ -165,6 +165,12 @@ module Rails
           @selected ||= nil
 
           selector = HTMLSelector.new(args, @selected) { nodeset document_root_element }
+
+          if selecting_no_body?(selector)
+            assert true
+            return
+          end
+
           selector.select.tap do |matches|
             assert_size_match!(matches.size, selector.tests, selector.selector, selector.message)
 
@@ -274,6 +280,12 @@ module Rails
               assert_operator size, :>=, min, message if min
               assert_operator size, :<=, max, message if max
             end
+          end
+
+          def selecting_no_body?(html_selector)
+            # Nokogiri gives the document a body element. Which means we can't
+            # run an assertion expecting there to not be a body.
+            html_selector.selector == 'body' && html_selector.tests[:count] == 0
           end
 
           def nest_selection(selection)
