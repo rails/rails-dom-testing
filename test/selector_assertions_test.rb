@@ -294,10 +294,6 @@ EOF
     assert_select '.foo'
   end
 
-  def document_root_element
-    @html_document
-  end
-
   protected
     def render_html(html)
       fake_render(:html, html)
@@ -309,9 +305,13 @@ EOF
 
     def fake_render(content_type, content)
       @html_document = if content_type == :xml
-        Nokogiri::XML::DocumentFragment.parse(content)
+        Nokogiri::XML::Document.parse(content)
       else
-        Nokogiri::HTML::DocumentFragment.parse(content)
+        Nokogiri::HTML::Document.parse(content)
       end
+    end
+
+    def document_root_element
+      @html_document.root
     end
 end
