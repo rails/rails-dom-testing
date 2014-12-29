@@ -6,6 +6,15 @@ Doms are compared via `assert_dom_equal` and `assert_dom_not_equal`.
 Elements are asserted via `assert_select`, `assert_select_encoded`, `assert_select_email` and a subset of the dom can be selected with `css_select`.
 The gem is developed for Rails 4.2 and above, and will not work on previous versions.
 
+## Deprecation warnings when upgrading to Rails 4.2:
+
+Nokogiri is slightly more strict about the format of css selectors than the previous implementation. That's why you have warnings like:
+
+```
+DEPRECATION WARNING: The assertion was not run because of an invalid css selector.
+```
+
+Check the 4.2 release notes [section on `assert_select`](http://edgeguides.rubyonrails.org/4_2_release_notes.html#assert-select) for help.
 
 ## Installation
 
