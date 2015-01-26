@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = Rails::Dom::Testing::VERSION
   spec.authors       = ["Rafael Mendonça França", "Kasper Timm Hansen"]
   spec.email         = ["rafaelmfranca@gmail.com", "kaspth@gmail.com"]
-  spec.description   = %q{ Dom and Selector assertions for Rails applications }
-  spec.summary       = %q{ This gem can compare doms and assert certain elements exists in doms using Nokogiri. }
-  spec.homepage      = "https://github.com/kaspth/rails-dom-testing"
+  spec.summary       = %q{ Dom and Selector assertions for Rails applications }
+  spec.description   = %q{ This gem can compare doms and assert certain elements exists in doms using Nokogiri. }
+  spec.homepage      = "https://github.com/rails/rails-dom-testing"
   spec.license       = "MIT"
 
   spec.files         = Dir["lib/**/*", "README.md", "LICENSE.txt", "CHANGELOG.md"]
