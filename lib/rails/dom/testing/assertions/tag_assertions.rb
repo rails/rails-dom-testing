@@ -146,7 +146,7 @@ module Rails
 
             def html_scanner_document
               xml = @response.content_type =~ /xml$/
-              @html_document ||= HTML::Document.new(@response.body, false, xml)
+              @html_scanner_document ||= HTML::Document.new(@response.body, false, xml)
             end
         end
       end
