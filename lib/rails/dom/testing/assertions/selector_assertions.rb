@@ -262,7 +262,7 @@ module Rails
         end
 
         private
-          include CountDescripable
+          include CountDescribable
 
           def document_root_element
             raise NotImplementedError, 'Implementing document_root_element makes ' \
