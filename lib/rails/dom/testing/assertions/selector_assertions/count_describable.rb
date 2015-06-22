@@ -1,6 +1,6 @@
 require 'active_support/concern'
 
-module CountDescripable
+module CountDescribable
   extend ActiveSupport::Concern
 
   private
