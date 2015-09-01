@@ -1,5 +1,4 @@
 # Rails::Dom::Testing
-[![Build Status](https://travis-ci.org/rails/rails-dom-testing.svg)](https://travis-ci.org/rails/rails-dom-testing)
 
 This gem is responsible for comparing HTML doms and asserting that DOM elements are present in Rails applications.
 Doms are compared via `assert_dom_equal` and `assert_dom_not_equal`.
@@ -67,10 +66,12 @@ Under the hood the doms are parsed with Nokogiri and you'll generally be working
 Read more about Nokogiri:
 - [Nokogiri](http://nokogiri.org)
 
-## Contributing
+## Contributing to Rails::Dom::Testing
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+Rails::Dom::Testing is work of many contributors. You're encouraged to submit pull requests, propose
+features and discuss issues.
+
+See [CONTRIBUTING](CONTRIBUTING.md).
+
+## License
+Rails::Dom::Testing is released under the [MIT License](MIT-LICENSE).
