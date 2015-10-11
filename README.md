@@ -55,7 +55,7 @@ assert_select_encoded '#out-of-your-element'
 assert_select_email '#you-got-mail'
 ```
 
-The documentation in [selector_assertions.rb](https://github.com/kaspth/rails-dom-testing/blob/master/lib/rails/dom/testing/assertions/selector_assertions.rb) goes into a lot more detail of how selector assertions can be used.
+The documentation in [selector_assertions.rb](https://github.com/rails/rails-dom-testing/blob/master/lib/rails/dom/testing/assertions/selector_assertions.rb) goes into a lot more detail of how selector assertions can be used.
 
 ## Read more
 
