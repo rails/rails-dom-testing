@@ -245,9 +245,7 @@ class AssertSelectTest < ActiveSupport::TestCase
     </item>
     <item>
       <description>
-        <![CDATA[
-          <p>Test 2</p>
-        ]]>
+        &lt;p&gt;Test 2&lt;/p&gt;
       </description>
     </item>
   </channel>

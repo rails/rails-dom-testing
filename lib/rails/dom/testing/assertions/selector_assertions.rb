@@ -219,7 +219,9 @@ module Rails
           end
 
           content = nodeset(element || @selected).map do |elem|
-            elem.children.select(&:cdata?).map(&:content)
+            elem.children.select do |child|
+              child.cdata? || (child.text? && !child.blank?)
+            end.map(&:content)
           end.join
 
           selected = Nokogiri::HTML::DocumentFragment.parse(content)
