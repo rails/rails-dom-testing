@@ -19,7 +19,6 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "nokogiri", "~> 1.6.0"
   spec.add_dependency "activesupport",  ">= 4.2.0.beta", "< 5.0"
-  spec.add_dependency "rails-deprecated_sanitizer", '>= 1.0.1'
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
