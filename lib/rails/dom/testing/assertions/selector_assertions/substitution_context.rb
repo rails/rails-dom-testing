@@ -19,11 +19,12 @@ class SubstitutionContext
 
   private
     def matcher_for(value, format_for_presentation)
-      if format_for_presentation && value.is_a?(Regexp)
-        value = value.inspect # Inspect Regexps for readability in error messages.
+      # Nokogiri doesn't like arbitrary values without quotes, hence inspect.
+      if format_for_presentation
+        value.inspect # Avoid to_s so Regexps aren't put in quotes.
+      else
+        value.to_s.inspect
       end
-
-      value.to_s.inspect # Nokogiri doesn't like arbitrary values without quotes, hence inspect.
     end
 
     def substitutable?(value)

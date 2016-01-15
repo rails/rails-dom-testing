@@ -239,7 +239,7 @@ class AssertSelectTest < ActiveSupport::TestCase
       assert_select "div:match('id', ?)", /wups/
     end
 
-    assert_match %Q{div:match('id', "/wups/")}, error.message
+    assert_match %Q{div:match('id', /wups/)}, error.message
   end
 
   def test_feed_item_encoded
