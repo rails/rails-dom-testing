@@ -16,6 +16,12 @@ class HTMLSelector #:nodoc:
     end
   end
 
+  def selecting_no_body? #:nodoc:
+    # Nokogiri gives the document a body element. Which means we can't
+    # run an assertion expecting there to not be a body.
+    @selector == 'body' && @tests[:count] == 0
+  end
+
   def select
     filter @root.css(selector, context)
   end
