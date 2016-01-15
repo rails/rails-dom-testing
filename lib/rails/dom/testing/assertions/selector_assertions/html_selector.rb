@@ -7,7 +7,7 @@ class HTMLSelector #:nodoc:
   def initialize(values, previous_selection = nil, &root_fallback)
     @values = values
     @root = extract_root(previous_selection, root_fallback)
-    @css_selector = @selector = extract_selector
+    extract_selectors
     @tests = extract_equality_tests
     @message = @values.shift
 
@@ -73,15 +73,15 @@ class HTMLSelector #:nodoc:
     end
   end
 
-  def extract_selector
+  def extract_selectors
     selector = @values.shift
 
     unless selector.is_a? String
       raise ArgumentError, "Expecting a selector as the first argument"
     end
 
-    context.substitute!(selector, @values)
-    selector
+    @css_selector = context.substitute!(selector, @values.dup, true)
+    @selector     = context.substitute!(selector, @values)
   end
 
   def extract_equality_tests
