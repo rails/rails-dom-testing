@@ -172,7 +172,8 @@ module Rails
           end
 
           selector.select.tap do |matches|
-            assert_size_match!(matches.size, selector.tests, selector.selector, selector.message)
+            assert_size_match!(matches.size, selector.tests,
+              selector.css_selector, selector.message)
 
             nest_selection(matches, &block) if block_given? && !matches.empty?
           end

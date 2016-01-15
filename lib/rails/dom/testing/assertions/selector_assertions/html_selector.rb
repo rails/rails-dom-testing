@@ -2,12 +2,12 @@ require 'active_support/core_ext/module/attribute_accessors'
 require_relative 'substitution_context'
 
 class HTMLSelector #:nodoc:
-  attr_reader :selector, :tests, :message
+  attr_reader :css_selector, :tests, :message
 
   def initialize(values, previous_selection = nil, &root_fallback)
     @values = values
     @root = extract_root(previous_selection, root_fallback)
-    @selector = extract_selector
+    @css_selector = @selector = extract_selector
     @tests = extract_equality_tests
     @message = @values.shift
 
@@ -23,7 +23,7 @@ class HTMLSelector #:nodoc:
   end
 
   def select
-    filter @root.css(selector, context)
+    filter @root.css(@selector, context)
   end
 
   private
