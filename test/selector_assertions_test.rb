@@ -232,6 +232,16 @@ class AssertSelectTest < ActiveSupport::TestCase
     end
   end
 
+  def test_nested_assert_select_with_match_failure_shows_nice_regex
+    render_html %Q{<div id="1">foo</div>}
+
+    error = assert_raises Minitest::Assertion do
+      assert_select "div:match('id', ?)", /wups/
+    end
+
+    assert_match %Q{div:match('id', "/wups/")}, error.message
+  end
+
   def test_feed_item_encoded
     render_xml <<-EOF
 <rss version="2.0">
