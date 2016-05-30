@@ -62,9 +62,6 @@ module Rails
           root = args.size == 1 ? document_root_element : args.shift
 
           nodeset(root).css(args.first)
-        rescue Nokogiri::CSS::SyntaxError => e
-          ActiveSupport::Deprecation.warn("The assertion was not run because of an invalid css selector.\n#{e}", caller(2))
-          return
         end
 
         # An assertion that selects elements and makes one or more equality tests.
@@ -177,9 +174,6 @@ module Rails
 
             nest_selection(matches, &block) if block_given? && !matches.empty?
           end
-        rescue Nokogiri::CSS::SyntaxError => e
-          ActiveSupport::Deprecation.warn("The assertion was not run because of an invalid css selector.\n#{e}", caller(2))
-          return
         end
 
         # Extracts the content of an element, treats it as encoded HTML and runs
