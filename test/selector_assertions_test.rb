@@ -220,15 +220,15 @@ class AssertSelectTest < ActiveSupport::TestCase
   # testing invalid selectors
   def test_assert_select_with_invalid_selector
     render_html '<a href="http://example.com">hello</a>'
-    assert_deprecated do
-      assert_nil assert_select("[href=http://example.com]")
+    assert_raises Nokogiri::CSS::SyntaxError do
+      assert_select("[href=http://example.com]")
     end
   end
 
   def test_css_select_with_invalid_selector
     render_html '<a href="http://example.com">hello</a>'
-    assert_deprecated do
-      assert_nil css_select("[href=http://example.com]")
+    assert_raises Nokogiri::CSS::SyntaxError do
+      css_select("[href=http://example.com]")
     end
   end
 
