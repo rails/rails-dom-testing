@@ -8,8 +8,20 @@ rvm:
   - 2.3.1
   - jruby
   - ruby-head
+gemfile:
+  - gemfiles/active_support_4.2.gemfile
+  - gemfiles/active_support_5.0.gemfile
 matrix:
   fast_finish: true
+  exclude:
+    - rvm: 1.9.3
+      gemfile: gemfiles/active_support_5.0.gemfile
+    - rvm: 2.0.0
+      gemfile: gemfiles/active_support_5.0.gemfile
+    - rvm: 2.1.10
+      gemfile: gemfiles/active_support_5.0.gemfile
+    - rvm: jruby
+      gemfile: gemfiles/active_support_5.0.gemfile
 notifications:
   email: false
   irc:
