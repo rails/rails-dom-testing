@@ -11,6 +11,8 @@ rvm:
 gemfile:
   - gemfiles/active_support_4.2.gemfile
   - gemfiles/active_support_5.0.gemfile
+before_install:
+  - "rm ${BUNDLE_GEMFILE}.lock"
 matrix:
   fast_finish: true
   exclude:
