@@ -3,25 +3,23 @@ PATH
   specs:
     rails-dom-testing (2.0.1)
       activesupport (>= 4.2.0, < 6.0)
-      nokogiri (~> 1.6.0)
+      nokogiri (~> 1.6)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (5.0.0)
+    activesupport (5.0.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-    concurrent-ruby (1.0.2)
+    concurrent-ruby (1.0.4)
     i18n (0.7.0)
     mini_portile2 (2.1.0)
-    minitest (5.9.0)
-    nokogiri (1.6.8)
+    minitest (5.10.1)
+    nokogiri (1.7.0)
       mini_portile2 (~> 2.1.0)
-      pkg-config (~> 1.1.7)
-    pkg-config (1.1.7)
-    rake (11.2.2)
+    rake (12.0.0)
     thread_safe (0.3.5)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
@@ -36,4 +34,4 @@ DEPENDENCIES
   rake
 
 BUNDLED WITH
-   1.12.5
+   1.13.7
