@@ -23,7 +23,41 @@ module Rails
             assert_not compare_doms(expected_dom, actual_dom), message
           end
 
+          # Compares hash and DOM Node attributes
+          #
+          #   # assert that node attributes are equal to passed hash
+          #   # <div id="foo" class="bar"></div>
+          #
+          #   # node = css_select("div:first")
+          #   # assert_dom_attributes_equal({id: "foo", class: "bar"}, node)
+          def assert_dom_attributes_equal(expected, node, message = nil)
+            actual = node_attributes(node)
+
+            message ||= "Expected: #{expected}\nActual: #{actual}"
+            assert_equal actual, expected, message
+          end
+
+          # The negated form ofassert_dom_attributes_equal
+          #
+          #   # assert that node attributes are not equal to passed hash
+          #   # <div id="foo" class="bar"></div>
+          #
+          #   # node = css_select("div:first")
+          #   # assert_dom_attributes_equal({id: "foo", class: "red"}, node)
+          def assert_dom_attributes_not_equal(expected, node, message = nil)
+            actual = node_attributes(node)
+
+            message ||= "Expected: #{expected}\nActual: #{actual}"
+            assert_not_equal actual, expected, message
+          end
+
           protected
+            def node_attributes(node)
+              normalized = node.attributes.map do |key, value|
+                [key.to_sym, value.to_s]
+              end
+              Hash[normalized]
+            end
 
             def compare_doms(expected, actual)
               return false unless expected.children.size == actual.children.size

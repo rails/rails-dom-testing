@@ -21,6 +21,20 @@ class DomAssertionsTest < ActiveSupport::TestCase
     assert_dom_equal(attributes, reverse_attributes)
   end
 
+  def test_equal_dom_attributes
+    doc = Nokogiri::HTML('<div id="foo" class="bar"></div>')
+    node = doc.css("div").first
+
+    assert_dom_attributes_equal({id: "foo", class: "bar"}, node)
+  end
+
+  def test_not_equal_dom_attributes
+    doc = Nokogiri::HTML('<div id="foo" class="white red"></div>')
+    node = doc.css("div").first
+
+    assert_dom_attributes_not_equal({id: "foo", class: "bar"}, node)
+  end
+
   def test_dom_not_equal
     assert_dom_not_equal('<a></a>', '<b></b>')
   end
