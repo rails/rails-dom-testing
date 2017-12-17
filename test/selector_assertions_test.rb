@@ -18,6 +18,11 @@ class AssertSelectTest < ActiveSupport::TestCase
   # Test assert select.
   #
 
+  def test_frozen_selector_substitution
+    render_html %Q{<div id="1">foo</div><div id="2">foo</div>}
+    assert_select "div:match('id', ?)".freeze, /\d+/
+  end
+
   def test_assert_select
     render_html %Q{<div id="1"></div><div id="2"></div>}
     assert_select "div", 2

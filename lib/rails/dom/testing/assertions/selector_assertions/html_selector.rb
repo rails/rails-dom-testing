@@ -74,6 +74,7 @@ class HTMLSelector #:nodoc:
       raise ArgumentError, "Expecting a selector as the first argument"
     end
 
+    selector = selector.dup
     context.substitute!(selector, @values)
     selector
   end
