@@ -21,6 +21,32 @@ class DomAssertionsTest < ActiveSupport::TestCase
     assert_dom_equal(attributes, reverse_attributes)
   end
 
+  def test_dom_equal_up_to_whitespace
+    canonical = %{<a> <b>hello </b>world</a>}
+    assert_dom_equal(canonical, %{<a>\n<b> hello </b>\nworld</a>})
+    assert_dom_equal(canonical, %{<a> \n <b> hello </b>world</a>})
+    assert_dom_equal(canonical, %{<a> \n <b>hello </b>world\n</a>\n})
+    assert_dom_equal(canonical, %{<a>\n\t<b>hello </b>\n\tworld</a>})
+    assert_dom_equal(canonical, <<~HTML)
+      <a>
+        <b>hello </b>
+        world
+      </a>
+    HTML
+  end
+
+  def test_dom_not_equal_up_with_significant_whitespace
+    with_space    = %{<a><b>hello</b> world</a>}
+    without_space = %{<a><b>hello</b>world</a>}
+    assert_dom_not_equal(with_space, without_space)
+  end
+
+  def test_dom_not_equal_up_with_boundary_whitespace
+    space_before = %{<a><b>hello </b>world</a>}
+    space_after  = %{<a><b>hello</b> world</a>}
+    assert_dom_not_equal(space_before, space_after)
+  end
+
   def test_dom_not_equal
     assert_dom_not_equal('<a></a>', '<b></b>')
   end

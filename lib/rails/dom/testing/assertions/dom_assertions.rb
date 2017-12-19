@@ -67,7 +67,37 @@ module Rails
           private
 
             def fragment(text)
-              Nokogiri::HTML::DocumentFragment.parse(text)
+              Nokogiri::HTML::DocumentFragment.parse(text).tap do |fragment|
+                squish_insignificant_whitespace(fragment)
+              end
+            end
+
+            def squish_insignificant_whitespace(block_node)
+              # Distill down the textual contents of `block_node` into "runs"
+              # of text nodes that are bridged by regions of whitespace:
+              text_nodes = block_node.children.flat_map { |node| flattened_text_nodes(node) }
+              text_nodes.last.content += ' ' if text_nodes.any?
+              runs = text_nodes.slice_when { |t1, t2| t1.text !~ /\s\z/ || t2.text !~ /\A\s/ }
+
+              runs.each do |run|
+                # Preserve whitespace at the start of each run:
+                squish_or_remove(run.shift, strip_left: false)
+                # Remove whitespace from boundaries within the run:
+                run.each { |text_node| squish_or_remove(text_node, strip_left: true) }
+              end
+            end
+
+            def squish_or_remove(text_node, strip_left:)
+              text = text_node.text
+
+              text.gsub!(/\s+/, ' ')
+              text.lstrip! if strip_left
+              text.empty? ? text_node.remove : text_node.content = text
+            end
+
+            def flattened_text_nodes(node)
+              return [node] unless node.element?
+              node.children.flat_map { |child| flattened_text_nodes(child) }
             end
         end
       end
