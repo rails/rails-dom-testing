@@ -111,7 +111,7 @@ module Rails
                 node.each { |element| condense_whitespace(element) }
               elsif node.element?
                 condense_whitespace(node.children)
-              else
+              elsif node.text?
                 text = node.text
                 text.gsub!(/\s+/, ' ')
                 text.strip!

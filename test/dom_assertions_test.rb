@@ -62,6 +62,13 @@ world
     assert_dom_not_equal(with_space, without_space)
   end
 
+  def test_explicit_processing_of_text_whitespace
+    valid_cdata = %{<script>//<![CDATA[\n1+1\n//]]></script>}
+    incorrect   = %{<script>//<![CDATA[ 1+1 //]]></script>}
+
+    assert_dom_not_equal(incorrect, valid_cdata)
+  end
+
   def test_dom_not_equal
     assert_dom_not_equal('<a></a>', '<b></b>')
   end
