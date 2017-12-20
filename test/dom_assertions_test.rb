@@ -27,11 +27,11 @@ class DomAssertionsTest < ActiveSupport::TestCase
     assert_dom_equal(canonical, %{<a> \n <b> hello </b>world</a>})
     assert_dom_equal(canonical, %{<a> \n <b>hello </b>world\n</a>\n})
     assert_dom_equal(canonical, %{<a>\n\t<b>hello </b>\n\tworld</a>})
-    assert_dom_equal(canonical, <<~HTML)
-      <a>
-        <b>hello </b>
-        world
-      </a>
+    assert_dom_equal(canonical, <<-HTML)
+<a>
+  <b>hello </b>
+  world
+</a>
     HTML
   end
 
