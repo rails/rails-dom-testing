@@ -4,9 +4,10 @@ rvm:
   - 1.9.3
   - 2.0.0
   - 2.1.10
-  - 2.2.5
-  - 2.3.1
-  - 2.4.0
+  - 2.2.9
+  - 2.3.6
+  - 2.4.3
+  - 2.5.0
   - jruby
   - ruby-head
 gemfile:
@@ -23,12 +24,16 @@ matrix:
       gemfile: gemfiles/active_support_5.0.gemfile
     - rvm: 2.1.10
       gemfile: gemfiles/active_support_5.0.gemfile
-    - rvm: 2.4.0
+    - rvm: 2.4.3
+      gemfile: gemfiles/active_support_4.2.gemfile
+    - rvm: 2.5.0
       gemfile: gemfiles/active_support_4.2.gemfile
     - rvm: ruby-head
       gemfile: gemfiles/active_support_4.2.gemfile
     - rvm: jruby
       gemfile: gemfiles/active_support_5.0.gemfile
+  allow_failures:
+    - rvm: ruby-head
 notifications:
   email: false
   irc:
