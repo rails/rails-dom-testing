@@ -87,20 +87,20 @@ class HTMLSelector #:nodoc:
   def extract_equality_tests
     comparisons = {}
     case comparator = @values.shift
-      when Hash
-        comparisons = comparator
-      when String, Regexp
-        comparisons[:text] = comparator
-      when Integer
-        comparisons[:count] = comparator
-      when Range
-        comparisons[:minimum] = comparator.begin
-        comparisons[:maximum] = comparator.end
-      when FalseClass
-        comparisons[:count] = 0
-      when NilClass, TrueClass
-        comparisons[:minimum] = 1
-      else raise ArgumentError, "I don't understand what you're trying to match"
+    when Hash
+      comparisons = comparator
+    when String, Regexp
+      comparisons[:text] = comparator
+    when Integer
+      comparisons[:count] = comparator
+    when Range
+      comparisons[:minimum] = comparator.begin
+      comparisons[:maximum] = comparator.end
+    when FalseClass
+      comparisons[:count] = 0
+    when NilClass, TrueClass
+      comparisons[:minimum] = 1
+    else raise ArgumentError, "I don't understand what you're trying to match"
     end
 
     # By default we're looking for at least one match.
