@@ -4,13 +4,10 @@ class SubstitutionContext
   end
 
   def substitute!(selector, values, format_for_presentation = false)
-    selector = selector.dup
-
-    while !values.empty? && substitutable?(values.first) && selector.index(@substitute)
-      selector.sub! @substitute, matcher_for(values.shift, format_for_presentation)
+    selector.gsub @substitute do |match|
+      next match[0] if values.empty? || !substitutable?(values.first)
+      matcher_for(values.shift, format_for_presentation)
     end
-
-    selector
   end
 
   def match(matches, attribute, matcher)
@@ -23,7 +20,7 @@ class SubstitutionContext
       if format_for_presentation
         value.inspect # Avoid to_s so Regexps aren't put in quotes.
       else
-        value.to_s.inspect
+        "\"#{value}\""
       end
     end
 
