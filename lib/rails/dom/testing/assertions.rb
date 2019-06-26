@@ -1,5 +1,11 @@
 require 'active_support/concern'
-require 'nokogiri'
+
+begin
+  gem "nokogiri", ">= 1.6"
+  require 'nokogiri'
+rescue LoadError => e
+  raise LoadError, "Failed to load nokogiri gem. Add gem 'nokogiri', group: [:development, :test] to your Gemfile and run bundle install to enable rails-dom-helpers in your test environment.", e.backtrace
+end
 
 module Rails
   module Dom
