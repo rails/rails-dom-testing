@@ -47,4 +47,52 @@ class DomAssertionsTest < ActiveSupport::TestCase
       %{<a><b c="2" /></a>}
     )
   end
+
+  def test_dom_equal_with_whitespace_strict
+    canonical = %{<a><b>hello</b> world</a>}
+    assert_dom_not_equal(canonical, %{<a>\n<b>hello\n </b> world</a>}, strict: true)
+    assert_dom_not_equal(canonical, %{<a> \n <b>\n hello</b> world</a>}, strict: true)
+    assert_dom_not_equal(canonical, %{<a>\n\t<b>hello</b> world</a>}, strict: true)
+    assert_dom_equal(canonical, %{<a><b>hello</b> world</a>}, strict: true)
+  end
+
+  def test_dom_equal_with_whitespace
+    canonical = %{<a><b>hello</b> world</a>}
+    assert_dom_equal(canonical, %{<a>\n<b>hello\n </b> world</a>})
+    assert_dom_equal(canonical, %{<a> \n <b>\n hello</b> world</a>})
+    assert_dom_equal(canonical, %{<a>\n\t<b>hello</b> world</a>})
+  end
+
+  def test_dom_equal_with_indentation
+    canonical = %{<a>hello<b>cruel</b>world</a>}
+    assert_dom_equal(canonical, <<-HTML)
+<a>
+  hello
+  <b>cruel</b>
+  world
+</a>
+    HTML
+
+    assert_dom_equal(canonical, <<-HTML)
+<a>
+hello
+<b>cruel</b>
+world
+</a>
+    HTML
+
+    assert_dom_equal(canonical, <<-HTML)
+<a>hello
+  <b>
+    cruel
+  </b>
+  world</a>
+    HTML
+  end
+
+  def test_dom_not_equal_with_interior_whitespace
+    with_space    = %{<a><b>hello world</b></a>}
+    without_space = %{<a><b>helloworld</b></a>}
+    assert_dom_not_equal(with_space, without_space)
+  end
 end

@@ -3,12 +3,14 @@ module Rails
     module Testing
       module Assertions
         module DomAssertions
+          WHITESPACE_REGEXP = /[\s]*\n[\s]*/
+
           # \Test two HTML strings for equivalency (e.g., equal even when attributes are in another order)
           #
           #   # assert that the referenced method generates the appropriate HTML string
           #   assert_dom_equal '<a href="http://www.example.com">Apples</a>', link_to("Apples", "http://www.example.com")
-          def assert_dom_equal(expected, actual, message = nil)
-            expected_dom, actual_dom = fragment(expected), fragment(actual)
+          def assert_dom_equal(expected, actual, message = nil, strict: false)
+            expected_dom, actual_dom = fragment(expected, strict), fragment(actual, strict)
             message ||= "Expected: #{expected}\nActual: #{actual}"
             assert compare_doms(expected_dom, actual_dom), message
           end
@@ -17,8 +19,8 @@ module Rails
           #
           #   # assert that the referenced method does not generate the specified HTML string
           #   assert_dom_not_equal '<a href="http://www.example.com">Apples</a>', link_to("Oranges", "http://www.example.com")
-          def assert_dom_not_equal(expected, actual, message = nil)
-            expected_dom, actual_dom = fragment(expected), fragment(actual)
+          def assert_dom_not_equal(expected, actual, message = nil, strict: false)
+            expected_dom, actual_dom = fragment(expected, strict), fragment(actual, strict)
             message ||= "Expected: #{expected}\nActual: #{actual}"
             assert_not compare_doms(expected_dom, actual_dom), message
           end
@@ -66,7 +68,8 @@ module Rails
 
           private
 
-            def fragment(text)
+            def fragment(text, strict)
+              text = text.gsub(WHITESPACE_REGEXP, '') unless strict
               Nokogiri::HTML::DocumentFragment.parse(text)
             end
         end
