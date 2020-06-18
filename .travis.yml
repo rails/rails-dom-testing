@@ -1,9 +1,6 @@
 sudo: false
 cache: bundler
 rvm:
-  - 1.9.3
-  - 2.0.0
-  - 2.1.10
   - 2.2.9
   - 2.3.6
   - 2.4.3
@@ -11,27 +8,21 @@ rvm:
   - jruby
   - ruby-head
 gemfile:
-  - gemfiles/active_support_4.2.gemfile
   - gemfiles/active_support_5.0.gemfile
+  - gemfiles/active_support_6.0.gemfile
 before_install:
   - "rm -f ${BUNDLE_GEMFILE}.lock"
 matrix:
   fast_finish: true
   exclude:
-    - rvm: 1.9.3
-      gemfile: gemfiles/active_support_5.0.gemfile
-    - rvm: 2.0.0
-      gemfile: gemfiles/active_support_5.0.gemfile
-    - rvm: 2.1.10
-      gemfile: gemfiles/active_support_5.0.gemfile
-    - rvm: 2.4.3
-      gemfile: gemfiles/active_support_4.2.gemfile
-    - rvm: 2.5.0
-      gemfile: gemfiles/active_support_4.2.gemfile
-    - rvm: ruby-head
-      gemfile: gemfiles/active_support_4.2.gemfile
     - rvm: jruby
       gemfile: gemfiles/active_support_5.0.gemfile
+    - rvm: 2.2.9
+      gemfile: gemfiles/active_support_6.0.gemfile
+    - rvm: 2.3.6
+      gemfile: gemfiles/active_support_6.0.gemfile
+    - rvm: 2.4.3
+      gemfile: gemfiles/active_support_6.0.gemfile
   allow_failures:
     - rvm: ruby-head
 notifications:
