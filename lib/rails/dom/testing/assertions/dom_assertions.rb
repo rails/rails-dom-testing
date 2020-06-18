@@ -61,7 +61,7 @@ module Rails
               if strict
                 child.to_s == other_child.to_s
               else
-                child.to_s.strip == other_child.to_s.strip
+                child.to_s.split == other_child.to_s.split
               end
             end
 

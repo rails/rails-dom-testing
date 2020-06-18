@@ -100,6 +100,23 @@ world
     HTML
   end
 
+  def test_dom_equal_with_surrounding_whitespace
+    canonical = %{<p>Lorem ipsum dolor</p><p>sit amet, consectetur adipiscing elit</p>}
+    assert_dom_equal(canonical, <<-HTML)
+<p>
+  Lorem
+  ipsum
+  dolor
+</p>
+
+<p>
+  sit amet,
+  consectetur
+  adipiscing elit
+</p>
+    HTML
+  end
+
   def test_dom_not_equal_with_interior_whitespace
     with_space    = %{<a><b>hello world</b></a>}
     without_space = %{<a><b>helloworld</b></a>}
