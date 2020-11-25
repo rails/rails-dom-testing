@@ -1,13 +1,9 @@
-require 'active_support/concern'
-
 module Rails
   module Dom
     module Testing
       module Assertions
         module SelectorAssertions
           module CountDescribable
-            extend ActiveSupport::Concern
-
             private
               def count_description(min, max, count) #:nodoc:
                 if min && max && (max != min)
