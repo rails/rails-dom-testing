@@ -135,6 +135,16 @@ class AssertSelectTest < ActiveSupport::TestCase
     end
   end
 
+  def test_substitution_values_with_values_other_than_string_or_regexp
+    render_html %Q{<div id="id_string">symbol</div><div id="1">numeric</div>}
+    assert_select "div:match('id', ?)", :id_string do |elements|
+      assert_equal 1, elements.size
+    end
+    assert_select "div:match('id', ?)", 1 do |elements|
+      assert_equal 1, elements.size
+    end
+  end
+
   def test_assert_select_root_html
     render_html '<a></a>'
 

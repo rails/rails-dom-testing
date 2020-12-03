@@ -28,6 +28,6 @@ class SubstitutionContext
     end
 
     def substitutable?(value)
-      value.is_a?(String) || value.is_a?(Regexp)
+      [ Symbol, Numeric, String, Regexp ].any? { |type| value.is_a? type }
     end
 end
