@@ -96,11 +96,14 @@ module Rails
         #     assert_select "li", 8
         #   end
         #
-        # The selector may be a CSS selector expression (String) or an expression
+        # The selector may be a CSS selector expression (String, Symbol, or Numeric) or an expression
         # with substitution values (Array).
         # Substitution uses a custom pseudo class match. Pass in whatever attribute you want to match (enclosed in quotes) and a ? for the substitution.
         # assert_select returns nil if called with an invalid css selector.
         #
+        # assert_select "div:match('id', ?)", "id_string"
+        # assert_select "div:match('id', ?)", :id_string
+        # assert_select "div:match('id', ?)", 1
         # assert_select "div:match('id', ?)", /\d+/
         #
         # === Equality Tests
