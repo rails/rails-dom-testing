@@ -21,7 +21,6 @@ class AssertSelectTest < ActiveSupport::TestCase
   def test_assert_select
     render_html %Q{<div id="1"></div><div id="2"></div>}
     assert_select "div", 2
-    assert_dom "div", 2
     assert_failure(/Expected at least 1 element matching \"p\", found 0/) { assert_select "p" }
   end
 
@@ -276,9 +275,6 @@ EOF
     assert_select "channel item description" do
 
       assert_select_encoded do
-        assert_select "p", :count=>2, :text=>/Test/
-      end
-      assert_dom_encoded do
         assert_select "p", :count=>2, :text=>/Test/
       end
 

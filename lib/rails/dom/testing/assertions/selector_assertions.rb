@@ -1,4 +1,3 @@
-require 'active_support/deprecation'
 require_relative 'selector_assertions/count_describable'
 require_relative 'selector_assertions/html_selector'
 
@@ -6,9 +5,9 @@ module Rails
   module Dom
     module Testing
       module Assertions
-        # Adds the +assert_select+ method for use in Rails functional
+        # Adds the +assert_dom+ method for use in Rails functional
         # test cases, which can be used to make assertions on the response HTML of a controller
-        # action. You can also call +assert_select+ within another +assert_select+ to
+        # action. You can also call +assert_dom+ within another +assert_dom+ to
         # make assertions on elements selected by the enclosing assertion.
         #
         # Use +css_select+ to select elements without making an assertions, either
@@ -16,8 +15,8 @@ module Rails
         #
         # In addition to HTML responses, you can make the following assertions:
         #
-        # * +assert_select_encoded+ - Assertions on HTML encoded inside XML, for example for dealing with feed item descriptions.
-        # * +assert_select_email+ - Assertions on the HTML body of an e-mail.
+        # * +assert_dom_encoded+ - Assertions on HTML encoded inside XML, for example for dealing with feed item descriptions.
+        # * +assert_dom_email+ - Assertions on the HTML body of an e-mail.
         module SelectorAssertions
 
         # Select and return all matching elements.
@@ -70,41 +69,41 @@ module Rails
         # starting from (and including) that element and all its children in
         # depth-first order.
         #
-        # If no element is specified +assert_select+ selects from
+        # If no element is specified +assert_dom+ selects from
         # the element returned in +document_root_element+
-        # unless +assert_select+ is called from within an +assert_select+ block.
-        # Override +document_root_element+ to tell +assert_select+ what to select from.
+        # unless +assert_dom+ is called from within an +assert_dom+ block.
+        # Override +document_root_element+ to tell +assert_dom+ what to select from.
         # The default implementation raises an exception explaining this.
         #
-        # When called with a block +assert_select+ passes an array of selected elements
-        # to the block. Calling +assert_select+ from the block, with no element specified,
+        # When called with a block +assert_dom+ passes an array of selected elements
+        # to the block. Calling +assert_dom+ from the block, with no element specified,
         # runs the assertion on the complete set of elements selected by the enclosing assertion.
-        # Alternatively the array may be iterated through so that +assert_select+ can be called
+        # Alternatively the array may be iterated through so that +assert_dom+ can be called
         # separately for each element.
         #
         #
         # ==== Example
         # If the response contains two ordered lists, each with four list elements then:
-        #   assert_select "ol" do |elements|
+        #   assert_dom "ol" do |elements|
         #     elements.each do |element|
-        #       assert_select element, "li", 4
+        #       assert_dom element, "li", 4
         #     end
         #   end
         #
         # will pass, as will:
-        #   assert_select "ol" do
-        #     assert_select "li", 8
+        #   assert_dom "ol" do
+        #     assert_dom "li", 8
         #   end
         #
         # The selector may be a CSS selector expression (String, Symbol, or Numeric) or an expression
         # with substitution values (Array).
         # Substitution uses a custom pseudo class match. Pass in whatever attribute you want to match (enclosed in quotes) and a ? for the substitution.
-        # assert_select returns nil if called with an invalid css selector.
+        # assert_dom returns nil if called with an invalid css selector.
         #
-        # assert_select "div:match('id', ?)", "id_string"
-        # assert_select "div:match('id', ?)", :id_string
-        # assert_select "div:match('id', ?)", 1
-        # assert_select "div:match('id', ?)", /\d+/
+        # assert_dom "div:match('id', ?)", "id_string"
+        # assert_dom "div:match('id', ?)", :id_string
+        # assert_dom "div:match('id', ?)", 1
+        # assert_dom "div:match('id', ?)", /\d+/
         #
         # === Equality Tests
         #
@@ -136,32 +135,32 @@ module Rails
         # evaluated the block is called with an array of all matched elements.
         #
         #   # At least one form element
-        #   assert_select "form"
+        #   assert_dom "form"
         #
         #   # Form element includes four input fields
-        #   assert_select "form input", 4
+        #   assert_dom "form input", 4
         #
         #   # Page title is "Welcome"
-        #   assert_select "title", "Welcome"
+        #   assert_dom "title", "Welcome"
         #
         #   # Page title is "Welcome" and there is only one title element
-        #   assert_select "title", {count: 1, text: "Welcome"},
+        #   assert_dom "title", {count: 1, text: "Welcome"},
         #       "Wrong title or more than one title element"
         #
         #   # Page contains no forms
-        #   assert_select "form", false, "This page must contain no forms"
+        #   assert_dom "form", false, "This page must contain no forms"
         #
         #   # Test the content and style
-        #   assert_select "body div.header ul.menu"
+        #   assert_dom "body div.header ul.menu"
         #
         #   # Use substitution values
-        #   assert_select "ol>li:match('id', ?)", /item-\d+/
+        #   assert_dom "ol>li:match('id', ?)", /item-\d+/
         #
         #   # All input fields in the form have a name
-        #   assert_select "form input" do
-        #     assert_select ":match('name', ?)", /.+/  # Not empty
+        #   assert_dom "form input" do
+        #     assert_dom ":match('name', ?)", /.+/  # Not empty
         #   end
-        def assert_select(*args, &block)
+        def assert_dom(*args, &block)
           @selected ||= nil
 
           selector = HTMLSelector.new(args, @selected) { nodeset document_root_element }
@@ -178,8 +177,7 @@ module Rails
             nest_selection(matches, &block) if block_given? && !matches.empty?
           end
         end
-        alias_method :assert_dom, :assert_select
-        deprecate assert_select: "assert_select will be renamed to assert_dom in an upcoming release"
+        alias_method :assert_select, :assert_dom
 
         # Extracts the content of an element, treats it as encoded HTML and runs
         # nested assertion on it.
@@ -192,30 +190,30 @@ module Rails
         # element +encoded+. It then calls the block with all un-encoded elements.
         #
         #   # Selects all bold tags from within the title of an Atom feed's entries (perhaps to nab a section name prefix)
-        #   assert_select "feed[xmlns='http://www.w3.org/2005/Atom']" do
+        #   assert_dom "feed[xmlns='http://www.w3.org/2005/Atom']" do
         #     # Select each entry item and then the title item
-        #     assert_select "entry>title" do
+        #     assert_dom "entry>title" do
         #       # Run assertions on the encoded title elements
-        #       assert_select_encoded do
-        #         assert_select "b"
+        #       assert_dom_encoded do
+        #         assert_dom "b"
         #       end
         #     end
         #   end
         #
         #
         #   # Selects all paragraph tags from within the description of an RSS feed
-        #   assert_select "rss[version=2.0]" do
+        #   assert_dom "rss[version=2.0]" do
         #     # Select description element of each feed item.
-        #     assert_select "channel>item>description" do
+        #     assert_dom "channel>item>description" do
         #       # Run assertions on the encoded elements.
-        #       assert_select_encoded do
-        #         assert_select "p"
+        #       assert_dom_encoded do
+        #         assert_dom "p"
         #       end
         #     end
         #   end
-        def assert_select_encoded(element = nil, &block)
+        def assert_dom_encoded(element = nil, &block)
           if !element && !@selected
-            raise ArgumentError, "Element is required when called from a nonnested assert_select"
+            raise ArgumentError, "Element is required when called from a nonnested assert_dom"
           end
 
           content = nodeset(element || @selected).map do |elem|
@@ -229,29 +227,28 @@ module Rails
             if content.empty?
               yield selected
             else
-              assert_select ":root", &block
+              assert_dom ":root", &block
             end
           end
         end
-        alias_method :assert_dom_encoded, :assert_select_encoded
-        deprecate assert_select_encoded: "assert_select_encoded will be renamed to assert_dom_encoded in an upcoming release"
+        alias_method :assert_select_encoded, :assert_dom_encoded
 
         # Extracts the body of an email and runs nested assertions on it.
         #
         # You must enable deliveries for this assertion to work, use:
         #   ActionMailer::Base.perform_deliveries = true
         #
-        #  assert_select_email do
-        #    assert_select "h1", "Email alert"
+        #  assert_dom_email do
+        #    assert_dom "h1", "Email alert"
         #  end
         #
-        #  assert_select_email do
-        #    items = assert_select "ol>li"
+        #  assert_dom_email do
+        #    items = assert_dom "ol>li"
         #    items.each do
         #       # Work with items here...
         #    end
         #  end
-        def assert_select_email(&block)
+        def assert_dom_email(&block)
           deliveries = ActionMailer::Base.deliveries
           assert !deliveries.empty?, "No e-mail in delivery list"
 
@@ -259,20 +256,19 @@ module Rails
             (delivery.parts.empty? ? [delivery] : delivery.parts).each do |part|
               if part["Content-Type"].to_s =~ /^text\/html\W/
                 root = Nokogiri::HTML::DocumentFragment.parse(part.body.to_s)
-                assert_select root, ":root", &block
+                assert_dom root, ":root", &block
               end
             end
           end
         end
-        alias_method :assert_dom_email, :assert_select_email
-        deprecate assert_select_email: "assert_select_email will be renamed to assert_dom_email in an upcoming release"
+        alias_method :assert_select_email, :assert_dom_email
 
         private
           include CountDescribable
 
           def document_root_element
             raise NotImplementedError, 'Implementing document_root_element makes ' \
-              'assert_select work without needing to specify an element to select from.'
+              'assert_dom work without needing to specify an element to select from.'
           end
 
           # +equals+ must contain :minimum, :maximum and :count keys
@@ -289,7 +285,7 @@ module Rails
           end
 
           def nest_selection(selection)
-            # Set @selected to allow nested assert_select.
+            # Set @selected to allow nested assert_dom.
             # Can be nested several levels deep.
             old_selected, @selected = @selected, selection
             yield @selected
