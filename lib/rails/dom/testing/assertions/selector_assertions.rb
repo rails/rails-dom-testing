@@ -178,6 +178,7 @@ module Rails
             nest_selection(matches, &block) if block_given? && !matches.empty?
           end
         end
+        deprecate assert_select: "assert_select will be renamed to assert_dom in an upcoming release"
 
         # Extracts the content of an element, treats it as encoded HTML and runs
         # nested assertion on it.
@@ -231,6 +232,7 @@ module Rails
             end
           end
         end
+        deprecate assert_select_encoded: "assert_select_encoded will be renamed to assert_dom_encoded in an upcoming release"
 
         # Extracts the body of an email and runs nested assertions on it.
         #
@@ -260,6 +262,7 @@ module Rails
             end
           end
         end
+        deprecate assert_select_email: "assert_select_email will be renamed to assert_dom_email in an upcoming release"
 
         private
           include CountDescribable
