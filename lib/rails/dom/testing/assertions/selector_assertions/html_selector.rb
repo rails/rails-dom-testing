@@ -61,7 +61,7 @@ class HTMLSelector #:nodoc:
 
     if possible_root == nil
       raise ArgumentError, 'First argument is either selector or element ' \
-        'to select, but nil found. Perhaps you called assert_select with ' \
+        'to select, but nil found. Perhaps you called assert_dom with ' \
         'an element that does not exist?'
     elsif possible_root.respond_to?(:css)
       @values.shift # remove the root, so selector is the first argument
