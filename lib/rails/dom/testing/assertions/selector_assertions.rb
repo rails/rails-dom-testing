@@ -160,6 +160,16 @@ module Rails
         #   assert_dom "form input" do
         #     assert_dom ":match('name', ?)", /.+/  # Not empty
         #   end
+        #
+        #   # move the document_root_element to a node
+        #   assert_dom document_root_element.at_css("main") do
+        #     assert_dom "h1", "Hello, World"
+        #   end
+        #
+        #   # move the document_root_element to a Nodeset
+        #   assert_dom css_select("section") do
+        #     assert_dom "h1"
+        #   end
         def assert_dom(*args, &block)
           @selected ||= nil
 
@@ -269,6 +279,10 @@ module Rails
           def document_root_element
             raise NotImplementedError, 'Implementing document_root_element makes ' \
               'assert_dom work without needing to specify an element to select from.'
+          end
+
+          def current_root_element
+            @selected || document_root_element
           end
 
           # +equals+ must contain :minimum, :maximum and :count keys
