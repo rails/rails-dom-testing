@@ -6,8 +6,7 @@ class HTMLSelector #:nodoc:
 
   def initialize(values, previous_selection = nil, &root_fallback)
     @values = values
-    @root = extract_root(previous_selection, root_fallback)
-    extract_selectors
+    @root, @css_selector, @selector = extract_root_and_selectors(previous_selection, &root_fallback)
     @tests = extract_equality_tests
     @message = @values.shift
 
@@ -23,7 +22,16 @@ class HTMLSelector #:nodoc:
   end
 
   def select
-    filter @root.css(@selector, context)
+    nodeset =
+      if @selector.present?
+        @root.css(@selector, context)
+      elsif @root.is_a? Nokogiri::XML::NodeSet
+        @root
+      else
+        Nokogiri::XML::NodeSet.new(@root.document, [@root])
+      end
+
+    filter nodeset
   end
 
   private
@@ -56,7 +64,7 @@ class HTMLSelector #:nodoc:
     Nokogiri::XML::NodeSet.new(matches.document, remaining)
   end
 
-  def extract_root(previous_selection, root_fallback)
+  def extract_root(previous_selection)
     possible_root = @values.first
 
     if possible_root == nil
@@ -68,20 +76,21 @@ class HTMLSelector #:nodoc:
       possible_root
     elsif previous_selection
       previous_selection
-    else
-      root_fallback.call
     end
   end
 
-  def extract_selectors
-    selector = @values.shift
+  def extract_root_and_selectors(previous_selection, &root_fallback)
+    root = extract_root(previous_selection)
 
-    unless selector.is_a? String
-      raise ArgumentError, "Expecting a selector as the first argument"
+    if @values.first.is_a? String
+      selector = @values.shift
+
+      [ root || root_fallback.call, context.substitute!(selector, @values.dup, true),  context.substitute!(selector, @values) ]
+    elsif root.present?
+      [ root ]
+    else
+      raise ArgumentError, "Expecting a selector or node as the first argument"
     end
-
-    @css_selector = context.substitute!(selector, @values.dup, true)
-    @selector     = context.substitute!(selector, @values)
   end
 
   def extract_equality_tests

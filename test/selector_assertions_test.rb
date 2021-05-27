@@ -199,6 +199,74 @@ class AssertSelectTest < ActiveSupport::TestCase
     end
   end
 
+  def test_assert_dom_with_node
+    render_html <<~HTML
+      <aside>other</aside>
+      <div id="1">
+        <span>foo</span>
+      </div>
+      <div id="2">
+        <span>bar</span>
+      </div>
+    HTML
+    root = document_root_element.at_css("div")
+    assert_dom root do
+      assert_equal Nokogiri::XML::NodeSet.new(root.document, [root]), current_root_element
+      assert_dom "div", text: "foo", count: 1
+      assert_dom "span", text: "foo", count: 1
+      assert_dom "div", text: "bar", count: 0
+      assert_dom "span", text: "bar", count: 0
+      assert_dom "aside", text: "other", count: 0
+    end
+    assert_dom "div", text: "foo", count: 1
+    assert_dom "div", text: "bar", count: 1
+    assert_dom "aside", text: "other", count: 1
+  end
+
+  def test_assert_dom_with_nodeset
+    render_html <<~HTML
+      <aside>other</aside>
+      <div id="1">
+        <span>foo</span>
+      </div>
+      <div id="2">
+        <span>bar</span>
+      </div>
+    HTML
+
+    assert_dom css_select("div") do
+      assert_dom "div", text: "foo", count: 1
+      assert_dom "span", text: "foo", count: 1
+      assert_dom "div", text: "bar", count: 1
+      assert_dom "span", text: "bar", count: 1
+      assert_dom "aside", text: "other", count: 0
+    end
+    assert_dom "div", text: "foo", count: 1
+    assert_dom "div", text: "bar", count: 1
+    assert_dom "aside", text: "other", count: 1
+  end
+
+  def test_assert_dom_with_nodeset_and_options
+    render_html <<~HTML
+      <div>
+        <span>foo</span>
+      </div>
+      <div>
+        <span>bar</span>
+      </div>
+    HTML
+
+    assert_dom css_select("div"), count: 2
+    assert_dom css_select("div"), minimum: 1, maximum: 2
+
+    assert_raises Minitest::Assertion do
+      assert_dom css_select("div"), count: 1
+    end
+    assert_raises Minitest::Assertion do
+      assert_dom css_select("div"), minimum: 3
+    end
+  end
+
   #
   # Test css_select.
   #
