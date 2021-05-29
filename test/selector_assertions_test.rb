@@ -135,6 +135,11 @@ class AssertSelectTest < ActiveSupport::TestCase
     end
   end
 
+  def test_multiple_substitution_values
+    render_html '<input name="foo[12]" value="34">'
+    assert_select ":match('name', ?):match('value', ?)", /\w+\[\d+\]/, /\d+/
+  end
+
   def test_substitution_values_with_values_other_than_string_or_regexp
     render_html %Q{<div id="id_string">symbol</div><div id="1">numeric</div>}
     assert_select "div:match('id', ?)", :id_string do |elements|
