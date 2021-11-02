@@ -11,6 +11,10 @@ class HTMLSelector #:nodoc:
     @tests = extract_equality_tests
     @message = @values.shift
 
+    if @message.is_a?(Hash)
+      raise ArgumentError, "Last argument was a Hash, which would be used for the assertion message. You probably want this to be a String, or you have the wrong type of arguments."
+    end
+
     if @values.shift
       raise ArgumentError, "Not expecting that last argument, you either have too many arguments, or they're the wrong type"
     end
