@@ -322,6 +322,14 @@ EOF
     assert_select "title", text: "Welcome", count: 1
   end
 
+  def test_assert_select_on_blank_response
+    render_html ""
+    assert_select "div", 0
+    assert_failure(/Expected exactly 1 element matching \"div\", found 0./) do
+      assert_select "div", 1
+    end
+  end
+
   protected
     def render_html(html)
       fake_render(:html, html)
