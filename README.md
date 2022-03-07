@@ -55,7 +55,7 @@ The documentation in [selector_assertions.rb](https://github.com/rails/rails-dom
 
 ## Read more
 
-Under the hood the doms are parsed with Nokogiri and you'll generally be working with these two classes:
+Under the hood the doms are parsed with Nokogiri, and you'll generally be working with these two classes:
 - [`Nokogiri::XML::Node`](http://www.rubydoc.info/github/sparklemotion/nokogiri/Nokogiri/XML/Node)
 - [`Nokogiri::XML::NodeSet`](http://www.rubydoc.info/github/sparklemotion/nokogiri/Nokogiri/XML/NodeSet)
 
