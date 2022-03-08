@@ -297,6 +297,7 @@ module Rails
             if node.is_a?(Nokogiri::XML::NodeSet)
               node
             else
+              node ||= Nokogiri::HTML::Document.new
               Nokogiri::XML::NodeSet.new(node.document, [node])
             end
           end
