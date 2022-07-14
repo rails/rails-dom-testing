@@ -52,7 +52,7 @@ class HTMLSelector #:nodoc:
       content.sub!(/\A\n/, '') if text_matches && match.name == "textarea"
 
       next if regex_matching ? (content =~ match_with) : (content == match_with)
-      content_mismatch ||= sprintf("<%s> expected but was\n<%s>.", match_with, content)
+      content_mismatch ||= sprintf("<%s> expected but was\n<%s>", match_with, content)
       true
     end
 
