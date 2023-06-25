@@ -4,6 +4,8 @@ require_relative 'substitution_context'
 class HTMLSelector #:nodoc:
   attr_reader :css_selector, :tests, :message
 
+  include Minitest::Assertions
+
   def initialize(values, previous_selection = nil, &root_fallback)
     @values = values
     @root = extract_root(previous_selection, root_fallback)
@@ -52,7 +54,7 @@ class HTMLSelector #:nodoc:
       content.sub!(/\A\n/, '') if text_matches && match.name == "textarea"
 
       next if regex_matching ? (content =~ match_with) : (content == match_with)
-      content_mismatch ||= sprintf("<%s> expected but was\n<%s>", match_with, content)
+      content_mismatch ||= diff(match_with, content)
       true
     end
 

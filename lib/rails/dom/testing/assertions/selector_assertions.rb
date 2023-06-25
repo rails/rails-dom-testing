@@ -275,7 +275,7 @@ module Rails
           def assert_size_match!(size, equals, css_selector, message = nil)
             min, max, count = equals[:minimum], equals[:maximum], equals[:count]
 
-            message ||= %(Expected #{count_description(min, max, count)} matching "#{css_selector}", found #{size}.)
+            message ||= %(Expected #{count_description(min, max, count)} matching #{css_selector.inspect}, found #{size})
             if count
               assert_equal count, size, message
             else
