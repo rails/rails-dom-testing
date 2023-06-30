@@ -3,6 +3,7 @@ PATH
   specs:
     rails-dom-testing (2.1.0)
       activesupport (>= 5.0.0)
+      minitest
       nokogiri (>= 1.6)
 
 GEM
