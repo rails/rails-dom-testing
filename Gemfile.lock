@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rails-dom-testing (2.0.3)
+    rails-dom-testing (2.1.0)
       activesupport (>= 5.0.0)
       nokogiri (>= 1.6)
 
