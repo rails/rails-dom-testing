@@ -17,6 +17,8 @@ GEM
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     minitest (5.18.1)
+    nokogiri (1.15.2-aarch64-linux)
+      racc (~> 1.4)
     nokogiri (1.15.2-x86_64-linux)
       racc (~> 1.4)
     racc (1.7.1)
@@ -25,6 +27,7 @@ GEM
       concurrent-ruby (~> 1.0)
 
 PLATFORMS
+  aarch64-linux
   x86_64-linux
 
 DEPENDENCIES
