@@ -19,9 +19,20 @@ on:
   pull_request:
 
 jobs:
+  rubocop:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.2
+        bundler-cache: true
+    - run: bundle exec rubocop
+
   test:
+    needs: ["rubocop"]
     name: "activesupport ${{ matrix.activesupport }} / ruby ${{ matrix.ruby }}"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -52,7 +63,7 @@ jobs:
     env:
       BUNDLE_GEMFILE: gemfiles/active_support_${{ matrix.activesupport }}.gemfile
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
