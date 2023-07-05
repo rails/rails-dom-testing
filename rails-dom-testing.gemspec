@@ -13,6 +13,8 @@ Gem::Specification.new do |spec|
   spec.homepage      = "https://github.com/rails/rails-dom-testing"
   spec.license       = "MIT"
 
+  spec.required_ruby_version = ">= 2.5.0"
+
   spec.files         = Dir["lib/**/*", "README.md", "MIT-LICENSE", "CHANGELOG.md"]
   spec.test_files    = Dir["test/**/*"]
   spec.require_paths = ["lib"]
