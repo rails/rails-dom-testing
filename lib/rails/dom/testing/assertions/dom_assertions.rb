@@ -24,7 +24,6 @@ module Rails
           end
 
           protected
-
             def compare_doms(expected, actual, strict)
               expected_children = extract_children(expected, strict)
               actual_children   = extract_children(actual, strict)
@@ -41,7 +40,7 @@ module Rails
               if strict
                 node.children
               else
-                node.children.reject{|n| n.text? && n.text.blank?}
+                node.children.reject { |n| n.text? && n.text.blank? }
               end
             end
 
@@ -83,7 +82,6 @@ module Rails
             end
 
           private
-
             def fragment(text)
               Nokogiri::HTML::DocumentFragment.parse(text)
             end

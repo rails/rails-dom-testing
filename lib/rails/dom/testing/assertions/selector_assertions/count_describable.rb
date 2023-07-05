@@ -5,7 +5,7 @@ module Rails
         module SelectorAssertions
           module CountDescribable
             private
-              def count_description(min, max, count) #:nodoc:
+              def count_description(min, max, count) # :nodoc:
                 if min && max && (max != min)
                   "between #{min} and #{max} elements"
                 elsif min && max && max == min && count
@@ -18,7 +18,7 @@ module Rails
               end
 
               def pluralize_element(quantity)
-                quantity == 1 ? 'element' : 'elements'
+                quantity == 1 ? "element" : "elements"
               end
           end
         end

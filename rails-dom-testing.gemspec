@@ -1,15 +1,16 @@
 # coding: utf-8
-lib = File.expand_path('../lib', __FILE__)
+
+lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'rails/dom/testing/version'
+require "rails/dom/testing/version"
 
 Gem::Specification.new do |spec|
   spec.name          = "rails-dom-testing"
   spec.version       = Rails::Dom::Testing::VERSION
   spec.authors       = ["Rafael Mendonça França", "Kasper Timm Hansen"]
   spec.email         = ["rafaelmfranca@gmail.com", "kaspth@gmail.com"]
-  spec.summary       = %q{ Dom and Selector assertions for Rails applications }
-  spec.description   = %q{ This gem can compare doms and assert certain elements exists in doms using Nokogiri. }
+  spec.summary       = "Dom and Selector assertions for Rails applications"
+  spec.description   = "This gem can compare doms and assert certain elements exists in doms using Nokogiri."
   spec.homepage      = "https://github.com/rails/rails-dom-testing"
   spec.license       = "MIT"
 

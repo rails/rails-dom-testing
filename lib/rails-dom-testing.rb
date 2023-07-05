@@ -1,1 +1,1 @@
-require 'rails/dom/testing/assertions'
+require "rails/dom/testing/assertions"
