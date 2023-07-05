@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "nokogiri"
 require "rails/dom/testing/assertions/dom_assertions"
 require "rails/dom/testing/assertions/selector_assertions"

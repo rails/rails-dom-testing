@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "minitest"
 require "active_support"
 require "active_support/core_ext/module/attribute_accessors"
@@ -52,7 +54,7 @@ class HTMLSelector # :nodoc:
         content = text_matches ? match.text : match.children.to_s
 
         content.strip! unless NO_STRIP.include?(match.name)
-        content.sub!(/\A\n/, "") if text_matches && match.name == "textarea"
+        content.delete_prefix!("\n") if text_matches && match.name == "textarea"
 
         next if regex_matching ? (content =~ match_with) : (content == match_with)
         content_mismatch ||= diff(match_with, content)
