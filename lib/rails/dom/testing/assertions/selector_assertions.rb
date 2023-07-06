@@ -213,6 +213,24 @@ module Rails
           #       end
           #     end
           #   end
+          #
+          # The DOM is created using an HTML parser specified by
+          # Rails::Dom::Testing.default_html_version (either :html4 or :html5).
+          #
+          # When testing in a Rails application, the parser default can also be set by setting
+          # +Rails.application.config.dom_testing_default_html_version+.
+          #
+          # If you want to specify the HTML parser just for a particular assertion, pass
+          # <tt>html_version: :html4</tt> or <tt>html_version: :html5</tt> keyword arguments:
+          #
+          #   assert_dom "feed[xmlns='http://www.w3.org/2005/Atom']" do
+          #     assert_dom "entry>title" do
+          #       assert_dom_encoded(html_version: :html5) do
+          #         assert_dom "b"
+          #       end
+          #     end
+          #   end
+          #
           def assert_dom_encoded(element = nil, html_version: nil, &block)
             if !element && !@selected
               raise ArgumentError, "Element is required when called from a nonnested assert_dom"
@@ -240,16 +258,32 @@ module Rails
           # You must enable deliveries for this assertion to work, use:
           #   ActionMailer::Base.perform_deliveries = true
           #
-          #  assert_dom_email do
-          #    assert_dom "h1", "Email alert"
-          #  end
+          # Example usage:
           #
-          #  assert_dom_email do
-          #    items = assert_dom "ol>li"
-          #    items.each do
-          #       # Work with items here...
-          #    end
-          #  end
+          #   assert_dom_email do
+          #     assert_dom "h1", "Email alert"
+          #   end
+          #
+          #   assert_dom_email do
+          #     items = assert_dom "ol>li"
+          #     items.each do
+          #        # Work with items here...
+          #     end
+          #   end
+          #
+          # The DOM is created using an HTML parser specified by
+          # Rails::Dom::Testing.default_html_version (either :html4 or :html5).
+          #
+          # When testing in a Rails application, the parser default can also be set by setting
+          # +Rails.application.config.dom_testing_default_html_version+.
+          #
+          # If you want to specify the HTML parser just for a particular assertion, pass
+          # <tt>html_version: :html4</tt> or <tt>html_version: :html5</tt> keyword arguments:
+          #
+          #   assert_dom_email(html_version: :html5) do
+          #     assert_dom "h1", "Email alert"
+          #   end
+          #
           def assert_dom_email(html_version: nil, &block)
             deliveries = ActionMailer::Base.deliveries
             assert !deliveries.empty?, "No e-mail in delivery list"

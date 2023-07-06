@@ -33,6 +33,30 @@ assert_dom_email '#you-got-mail'
 
 The documentation in [selector_assertions.rb](https://github.com/rails/rails-dom-testing/blob/master/lib/rails/dom/testing/assertions/selector_assertions.rb) goes into a lot more detail of how selector assertions can be used.
 
+### HTML versions
+
+By default, assertions will use Nokogiri's HTML4 parser.
+
+If `Rails::Dom::Testing.default_html_version` is set to `:html5`, then the assertions will use
+Nokogiri's HTML5 parser. (If the HTML5 parser is not available on your platform, then a
+`NotImplementedError` will be raised.)
+
+When testing in a Rails application, the parser default can also be set by setting
+`Rails.application.config.dom_testing_default_html_version`.
+
+Some assertions support an `html_version:` keyword argument which can override the default for that
+assertion. For example:
+
+``` ruby
+# compare DOMs built with the HTML5 parser
+assert_dom_equal(expected, actual, html_version: :html5)
+
+# compare DOMs built with the HTML4 parser
+assert_dom_not_equal(expected, actual, html_version: :html4)
+```
+
+Please see documentation for individual assertions for more details.
+
 
 ## Installation
 
