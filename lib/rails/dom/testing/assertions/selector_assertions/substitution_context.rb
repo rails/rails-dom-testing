@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class SubstitutionContext
   def initialize
-    @substitute = '?'
+    @substitute = "?"
   end
 
   def substitute!(selector, values, format_for_presentation = false)

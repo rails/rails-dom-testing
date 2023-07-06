@@ -1,6 +1,8 @@
-require 'nokogiri'
-require 'rails/dom/testing/assertions/dom_assertions'
-require 'rails/dom/testing/assertions/selector_assertions'
+# frozen_string_literal: true
+
+require "nokogiri"
+require_relative "assertions/dom_assertions"
+require_relative "assertions/selector_assertions"
 
 module Rails
   module Dom

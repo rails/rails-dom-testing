@@ -1,5 +1,7 @@
-require 'test_helper'
-require 'rails/dom/testing/assertions/dom_assertions'
+# frozen_string_literal: true
+
+require "test_helper"
+require "rails/dom/testing/assertions/dom_assertions"
 
 class DomAssertionsTest < ActiveSupport::TestCase
   Assertion = Minitest::Assertion
@@ -11,7 +13,7 @@ class DomAssertionsTest < ActiveSupport::TestCase
   end
 
   def test_dom_equal
-    html = '<a></a>'
+    html = "<a></a>"
     assert_dom_equal(html, html.dup)
   end
 
@@ -22,7 +24,7 @@ class DomAssertionsTest < ActiveSupport::TestCase
   end
 
   def test_dom_not_equal
-    assert_dom_not_equal('<a></a>', '<b></b>')
+    assert_dom_not_equal("<a></a>", "<b></b>")
   end
 
   def test_unequal_doms_attributes_with_different_order_and_values
@@ -35,7 +37,7 @@ class DomAssertionsTest < ActiveSupport::TestCase
     message = "This is my message."
 
     e = assert_raises(Assertion) do
-      assert_dom_equal('<a></a>', '<b></b>', message)
+      assert_dom_equal("<a></a>", "<b></b>", message)
     end
 
     assert_equal e.message, message
