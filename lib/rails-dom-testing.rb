@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-require "rails/dom/testing/assertions"
+require_relative "rails/dom/testing/assertions"
