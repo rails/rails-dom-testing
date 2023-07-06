@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative "../parser_selection"
 require_relative "selector_assertions/count_describable"
 require_relative "selector_assertions/html_selector"
 
@@ -212,7 +213,7 @@ module Rails
           #       end
           #     end
           #   end
-          def assert_dom_encoded(element = nil, &block)
+          def assert_dom_encoded(element = nil, html_version: nil, &block)
             if !element && !@selected
               raise ArgumentError, "Element is required when called from a nonnested assert_dom"
             end
@@ -223,7 +224,7 @@ module Rails
               end.map(&:content)
             end.join
 
-            selected = Nokogiri::HTML::DocumentFragment.parse(content)
+            selected = Rails::Dom::Testing.html_document_fragment(html_version: html_version).parse(content)
             nest_selection(selected) do
               if content.empty?
                 yield selected
@@ -249,14 +250,14 @@ module Rails
           #       # Work with items here...
           #    end
           #  end
-          def assert_dom_email(&block)
+          def assert_dom_email(html_version: nil, &block)
             deliveries = ActionMailer::Base.deliveries
             assert !deliveries.empty?, "No e-mail in delivery list"
 
             deliveries.each do |delivery|
               (delivery.parts.empty? ? [delivery] : delivery.parts).each do |part|
                 if /^text\/html\W/.match?(part["Content-Type"].to_s)
-                  root = Nokogiri::HTML::DocumentFragment.parse(part.body.to_s)
+                  root = Rails::Dom::Testing.html_document_fragment(html_version: html_version).parse(part.body.to_s)
                   assert_dom root, ":root", &block
                 end
               end

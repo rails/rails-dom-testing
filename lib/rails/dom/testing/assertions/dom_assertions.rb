@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "../parser_selection"
+
 module Rails
   module Dom
     module Testing
@@ -9,8 +11,8 @@ module Rails
           #
           #   # assert that the referenced method generates the appropriate HTML string
           #   assert_dom_equal '<a href="http://www.example.com">Apples</a>', link_to("Apples", "http://www.example.com")
-          def assert_dom_equal(expected, actual, message = nil, strict: false)
-            expected_dom, actual_dom = fragment(expected), fragment(actual)
+          def assert_dom_equal(expected, actual, message = nil, strict: false, html_version: nil)
+            expected_dom, actual_dom = fragment(expected, html_version: html_version), fragment(actual, html_version: html_version)
             message ||= "Expected: #{expected}\nActual: #{actual}"
             assert compare_doms(expected_dom, actual_dom, strict), message
           end
@@ -19,8 +21,8 @@ module Rails
           #
           #   # assert that the referenced method does not generate the specified HTML string
           #   assert_dom_not_equal '<a href="http://www.example.com">Apples</a>', link_to("Oranges", "http://www.example.com")
-          def assert_dom_not_equal(expected, actual, message = nil, strict: false)
-            expected_dom, actual_dom = fragment(expected), fragment(actual)
+          def assert_dom_not_equal(expected, actual, message = nil, strict: false, html_version: nil)
+            expected_dom, actual_dom = fragment(expected, html_version: html_version), fragment(actual, html_version: html_version)
             message ||= "Expected: #{expected}\nActual: #{actual}"
             assert_not compare_doms(expected_dom, actual_dom, strict), message
           end
@@ -84,8 +86,8 @@ module Rails
             end
 
           private
-            def fragment(text)
-              Nokogiri::HTML::DocumentFragment.parse(text)
+            def fragment(text, html_version: nil)
+              Rails::Dom::Testing.html_document_fragment(html_version: html_version).parse(text)
             end
         end
       end

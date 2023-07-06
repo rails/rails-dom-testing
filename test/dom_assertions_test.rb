@@ -125,3 +125,90 @@ world
     assert_dom_not_equal(with_space, without_space)
   end
 end
+
+class DomAssertionsHtmlParserSelectionTest < ActiveSupport::TestCase
+  include DomTestingHelpers
+  include Rails::Dom::Testing::Assertions::DomAssertions
+
+  def setup
+    super
+
+    # https://html.spec.whatwg.org/multipage/parsing.html#an-introduction-to-error-handling-and-strange-cases-in-the-parser
+    # we use these results to assert that we're invoking the expected parser.
+    @input = "<p>1<b>2<i>3</b>4</i>5</p>"
+    @html4_result = jruby? ? "<p>1<b>2<i>3</i></b><i>4</i>5</p>" : "<p>1<b>2<i>3</i></b>45</p>"
+    @html5_result = jruby? ? nil                                 : "<p>1<b>2<i>3</i></b><i>4</i>5</p>"
+  end
+
+  test "default value is html4" do
+    assert_equal(:html4, Rails::Dom::Testing.default_html_version)
+  end
+
+  test "default html4, no version specified" do
+    with_default_html_version(:html4) do
+      assert_dom_equal(@html4_result, @input)
+      assert_dom_not_equal(@html5_result, @input)
+    end
+  end
+
+  test "default html4, html4 specified" do
+    with_default_html_version(:html4) do
+      assert_dom_equal(@html4_result, @input, html_version: :html4)
+      assert_dom_not_equal(@html5_result, @input, html_version: :html4)
+    end
+  end
+
+  test "default html4, html5 specified" do
+    skip("html5 is not supported") unless Rails::Dom::Testing.html5_support?
+
+    with_default_html_version(:html4) do
+      assert_dom_equal(@html5_result, @input, html_version: :html5)
+      assert_dom_not_equal(@html4_result, @input, html_version: :html5)
+    end
+  end
+
+  test "default html5, no version specified" do
+    skip("html5 is not supported") unless Rails::Dom::Testing.html5_support?
+
+    with_default_html_version(:html5) do
+      assert_dom_equal(@html5_result, @input)
+      assert_dom_not_equal(@html4_result, @input)
+    end
+  end
+
+  test "default html5, html4 specified" do
+    with_default_html_version(:html5) do
+      assert_dom_equal(@html4_result, @input, html_version: :html4)
+      assert_dom_not_equal(@html5_result, @input, html_version: :html4)
+    end
+  end
+
+  test "default html5, html5 specified" do
+    skip("html5 is not supported") unless Rails::Dom::Testing.html5_support?
+
+    with_default_html_version(:html5) do
+      assert_dom_equal(@html5_result, @input, html_version: :html5)
+      assert_dom_not_equal(@html4_result, @input, html_version: :html5)
+    end
+  end
+
+  test "raise NotImplementedError html5 when not supported" do
+    Rails::Dom::Testing.stub(:html5_support?, false) do
+      with_default_html_version(:html5) do
+        assert_raises(NotImplementedError) { assert_dom_equal("a", "b") }
+        assert_raises(NotImplementedError) { assert_dom_equal("a", "b", html_version: :html5) }
+        assert_nothing_raised { assert_dom_equal(@html4_result, @input, html_version: :html4) }
+      end
+    end
+  end
+
+  test "default set to invalid" do
+    with_default_html_version(:html9) do
+      assert_raises(ArgumentError) { assert_dom_equal("a", "b") }
+    end
+  end
+
+  test "invalid version specified" do
+    assert_raises(ArgumentError) { assert_dom_equal("a", "b", html_version: :html9) }
+  end
+end
