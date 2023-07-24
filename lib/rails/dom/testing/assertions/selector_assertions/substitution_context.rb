@@ -24,7 +24,7 @@ module Rails
             private
               def matcher_for(value, format_for_presentation)
                 # Nokogiri doesn't like arbitrary values without quotes, hence inspect.
-                if format_for_presentation
+                if format_for_presentation || value.is_a?(String)
                   value.inspect # Avoid to_s so Regexps aren't put in quotes.
                 else
                   "\"#{value}\""

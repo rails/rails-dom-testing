@@ -136,6 +136,11 @@ class AssertSelectTest < ActiveSupport::TestCase
     end
   end
 
+  def test_substitution_value_with_quotes
+    render_html '<input placeholder="placeholder with &quot;quotes&quot;" />'
+    assert_select "input[placeholder=?]", 'placeholder with "quotes"'
+  end
+
   def test_multiple_substitution_values
     render_html '<input name="foo[12]" value="34">'
     assert_select ":match('name', ?):match('value', ?)", /\w+\[\d+\]/, /\d+/
