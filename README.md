@@ -57,7 +57,6 @@ assert_dom_not_equal(expected, actual, html_version: :html4)
 
 Please see documentation for individual assertions for more details.
 
-
 ## Installation
 
 Add this line to your application's Gemfile:
