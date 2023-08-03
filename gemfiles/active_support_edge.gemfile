@@ -1,0 +1,9 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+gem "activesupport", github: "rails/rails", branch: "main"
+
+gem "nokogiri", ">= 1.7.0"
+
+gemspec path: "../"
