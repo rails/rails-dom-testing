@@ -26,8 +26,10 @@ module Rails
                 # Nokogiri doesn't like arbitrary values without quotes, hence inspect.
                 if format_for_presentation
                   value.inspect # Avoid to_s so Regexps aren't put in quotes.
-                else
+                elsif value.is_a?(Regexp)
                   "\"#{value}\""
+                else
+                  value.to_s.inspect
                 end
               end
 
