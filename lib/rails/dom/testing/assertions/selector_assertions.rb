@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative "../parser_selection"
-require_relative "selector_assertions/count_describable"
 require_relative "selector_assertions/html_selector"
 
 module Rails
@@ -300,8 +299,6 @@ module Rails
           alias_method :assert_select_email, :assert_dom_email
 
         private
-          include CountDescribable
-
           def document_root_element
             raise NotImplementedError, "Implementing document_root_element makes " \
               "assert_dom work without needing to specify an element to select from."
@@ -318,6 +315,22 @@ module Rails
               assert_operator size, :>=, min, message if min
               assert_operator size, :<=, max, message if max
             end
+          end
+
+          def count_description(min, max, count)
+            if min && max && (max != min)
+              "between #{min} and #{max} elements"
+            elsif min && max && max == min && count
+              "exactly #{count} #{pluralize_element(min)}"
+            elsif min && !(min == 1 && max == 1)
+              "at least #{min} #{pluralize_element(min)}"
+            elsif max
+              "at most #{max} #{pluralize_element(max)}"
+            end
+          end
+
+          def pluralize_element(quantity)
+            quantity == 1 ? "element" : "elements"
           end
 
           def nest_selection(selection)
