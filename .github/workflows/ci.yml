@@ -30,7 +30,6 @@ jobs:
     - run: bundle exec rubocop
 
   test:
-    needs: ["rubocop"]
     name: "activesupport ${{ matrix.activesupport }} / ruby ${{ matrix.ruby }}"
     runs-on: ubuntu-latest
     strategy:
