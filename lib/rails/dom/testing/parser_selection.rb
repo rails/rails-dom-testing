@@ -47,5 +47,3 @@ module Rails
     end
   end
 end
-
-require_relative "railtie" if defined?(Rails::Railtie)
