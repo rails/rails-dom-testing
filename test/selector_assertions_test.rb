@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "rails/dom/testing/assertions/selector_assertions"
 
 class AssertSelectTest < ActiveSupport::TestCase
   Assertion = Minitest::Assertion

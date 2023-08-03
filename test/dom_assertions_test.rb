@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "test_helper"
-require "rails/dom/testing/assertions/dom_assertions"
 
 class DomAssertionsTest < ActiveSupport::TestCase
   Assertion = Minitest::Assertion
