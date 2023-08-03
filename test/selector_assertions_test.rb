@@ -7,6 +7,7 @@ require "rails/dom/testing/assertions/selector_assertions"
 class AssertSelectTest < ActiveSupport::TestCase
   Assertion = Minitest::Assertion
 
+  include DomTestingHelpers
   include Rails::Dom::Testing::Assertions::SelectorAssertions
 
   def assert_failure(message, &block)
@@ -302,6 +303,52 @@ class AssertSelectTest < ActiveSupport::TestCase
     end
   end
 
+  def test_feed_item_encoded_with_html_version
+    # https://html.spec.whatwg.org/multipage/parsing.html#an-introduction-to-error-handling-and-strange-cases-in-the-parser
+    # we use these results to assert that we're invoking the expected parser.
+    input = CGI.escapeHTML("<p>1<b>2<i>3</b>4</i>5</p>")
+    html4_result = jruby? ? "<p>1<b>2<i>3</i></b><i>4</i>5</p>" : "<p>1<b>2<i>3</i></b>45</p>"
+    html5_result = jruby? ? nil                                 : "<p>1<b>2<i>3</i></b><i>4</i>5</p>"
+
+    render_xml(<<~XML)
+      <root>
+        <contents>#{input}</contents>
+      </root>
+    XML
+
+    with_default_html_version(:html4) do
+      assert_select "root contents" do
+        assert_select_encoded do |contents|
+          assert_equal(html4_result, contents.to_html)
+        end
+
+        assert_select_encoded(html_version: :html4) do |contents|
+          assert_equal(html4_result, contents.to_html)
+        end
+
+        assert_select_encoded(html_version: :html5) do |contents|
+          assert_equal(html5_result, contents.to_html)
+        end if Rails::Dom::Testing.html5_support?
+      end
+    end
+
+    with_default_html_version(:html5) do
+      assert_select "root contents" do
+        assert_select_encoded do |contents|
+          assert_equal(html5_result, contents.to_html)
+        end if Rails::Dom::Testing.html5_support?
+
+        assert_select_encoded(html_version: :html4) do |contents|
+          assert_equal(html4_result, contents.to_html)
+        end
+
+        assert_select_encoded(html_version: :html5) do |contents|
+          assert_equal(html5_result, contents.to_html)
+        end if Rails::Dom::Testing.html5_support?
+      end
+    end
+  end
+
   def test_body_not_present_in_empty_document
     render_html "<div></div>"
     assert_select "body", 0
@@ -348,7 +395,7 @@ class AssertSelectTest < ActiveSupport::TestCase
       @html_document = if content_type == :xml
         Nokogiri::XML::Document.parse(content)
       else
-        Nokogiri::HTML::Document.parse(content)
+        Rails::Dom::Testing.html_document.parse(content)
       end
     end
 

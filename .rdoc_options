@@ -1,0 +1,10 @@
+---
+encoding: UTF-8
+charset: UTF-8
+exclude:
+- "\\.gemspec\\z"
+- "gemfiles"
+- "Gemfile*"
+- "Rakefile"
+main_page: "README.md"
+markup: rdoc
