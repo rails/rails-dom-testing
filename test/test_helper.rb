@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-require "nokogiri"
-require "active_support"
+require "rails-dom-testing"
 require "active_support/test_case"
 require "minitest/autorun"
 
