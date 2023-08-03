@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
+
+require "nokogiri"
+require "active_support"
 require "active_support/core_ext/module/attribute_accessors"
+
+require "rails/dom/testing/assertions"
 
 module Rails
   module Dom

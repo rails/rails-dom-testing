@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require "nokogiri"
-require "active_support"
-
 require_relative "assertions/dom_assertions"
 require_relative "assertions/selector_assertions"
 

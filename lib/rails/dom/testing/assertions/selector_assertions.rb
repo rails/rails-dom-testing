@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "../parser_selection"
 require_relative "selector_assertions/html_selector"
 
 module Rails

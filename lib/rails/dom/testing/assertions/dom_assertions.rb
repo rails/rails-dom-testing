@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "../parser_selection"
-
 module Rails
   module Dom
     module Testing
