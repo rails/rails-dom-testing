@@ -24,6 +24,9 @@ css_select '.hello' # => Nokogiri::XML::NodeSet of elements with hello class
 # select from a supplied node. assert_dom asserts elements exist.
 assert_dom document_root_element.at('.hello'), '.goodbye'
 
+# select from a supplied node. assert_not_dom asserts elements do not exist.
+assert_not_dom document_root_element.at('.hello'), '.goodbye'
+
 # elements in CDATA encoded sections can also be selected
 assert_dom_encoded '#out-of-your-element'
 

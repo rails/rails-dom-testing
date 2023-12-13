@@ -164,7 +164,33 @@ module Rails
             @selected ||= nil
 
             selector = HTMLSelector.new(args, @selected) { nodeset document_root_element }
+            dom_assertions(selector, &block)
+          end
+          alias_method :assert_select, :assert_dom
 
+          # The negated form of +assert_dom+.
+          #
+          # === Equality Tests
+          #
+          # Supports the same equality tests as +assert_dom+ except for:
+          # * <tt>true</tt>
+          # * <tt>false</tt>
+          # * <tt>Integer</tt>
+          # * <tt>Range</tt>
+          # * <tt>:count</tt>
+          # * <tt>:minimum</tt>
+          # * <tt>:maximum</tt>
+          def assert_not_dom(*args, &block)
+            @selected ||= nil
+
+            selector = HTMLSelector.new(args, @selected, refute: true) { nodeset document_root_element }
+            dom_assertions(selector, &block)
+          end
+          alias_method :refute_dom, :assert_not_dom
+          alias_method :assert_not_select, :assert_not_dom
+          alias_method :refute_select, :assert_not_dom
+
+          private def dom_assertions(selector, &block)
             if selector.selecting_no_body?
               assert true
               return
@@ -177,7 +203,6 @@ module Rails
               nest_selection(matches, &block) if block_given? && !matches.empty?
             end
           end
-          alias_method :assert_select, :assert_dom
 
           # Extracts the content of an element, treats it as encoded HTML and runs
           # nested assertion on it.

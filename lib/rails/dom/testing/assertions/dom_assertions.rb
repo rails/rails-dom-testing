@@ -70,6 +70,7 @@ module Rails
             message ||= "Expected: #{expected}\nActual: #{actual}"
             assert_not compare_doms(expected_dom, actual_dom, strict), message
           end
+          alias_method :refute_dom_equal, :assert_dom_not_equal
 
           protected
             def compare_doms(expected, actual, strict)

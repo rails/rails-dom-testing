@@ -14,11 +14,11 @@ module Rails
 
             include Minitest::Assertions
 
-            def initialize(values, previous_selection = nil, &root_fallback)
+            def initialize(values, previous_selection = nil, refute: false, &root_fallback)
               @values = values
               @root = extract_root(previous_selection, root_fallback)
               extract_selectors
-              @tests = extract_equality_tests
+              @tests = extract_equality_tests(refute)
               @message = @values.shift
 
               if @message.is_a?(Hash)
@@ -97,7 +97,7 @@ module Rails
                 @selector     = context.substitute!(selector, @values)
               end
 
-              def extract_equality_tests
+              def extract_equality_tests(refute)
                 comparisons = {}
                 case comparator = @values.shift
                 when Hash
@@ -113,7 +113,16 @@ module Rails
                   comparisons[:count] = 0
                 when NilClass, TrueClass
                   comparisons[:minimum] = 1
-                else raise ArgumentError, "I don't understand what you're trying to match"
+                else
+                  raise ArgumentError, "I don't understand what you're trying to match"
+                end
+
+                if refute
+                  if comparisons[:count] || (comparisons[:minimum] && !comparator.nil?) || comparisons[:maximum]
+                    raise ArgumentError, "Cannot use true, false, Integer, Range, :count, :minimum and :maximum when asserting that a selector does not match"
+                  end
+
+                  comparisons[:count] = 0
                 end
 
                 # By default we're looking for at least one match.
