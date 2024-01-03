@@ -16,7 +16,7 @@ class AssertSelectTest < ActiveSupport::TestCase
   end
 
   #
-  # Test assert select.
+  # Test assert_select.
   #
 
   def test_assert_select
@@ -208,6 +208,52 @@ class AssertSelectTest < ActiveSupport::TestCase
       assert_nothing_raised    { assert_select "div", html: /\w*/, count: 2 }
       assert_raise(Assertion)  { assert_select "div", html: "<span>foo</span>", count: 2 }
     end
+  end
+
+  #
+  # Test assert_not_select.
+  #
+
+  def test_not_select
+    render_html '<div id="1"></div>'
+    assert_not_select "p"
+    assert_failure(/Expected exactly 0 elements matching "div", found 1/) { assert_not_select "div" }
+    assert_failure(/Expected exactly 0 elements matching "div#1", found 1/) { assert_not_select "div#1" }
+  end
+
+  def test_not_select_with_true
+    render_html '<div id="1"></div>'
+    assert_raises(ArgumentError) { assert_not_select "div", true }
+  end
+
+  def test_not_select_with_false
+    render_html '<div id="1"></div>'
+    assert_raises(ArgumentError) { assert_not_select "div", false }
+  end
+
+  def test_not_select_with_integer
+    render_html '<div id="1"></div>'
+    assert_raises(ArgumentError) { assert_not_select "div", 1 }
+  end
+
+  def test_not_select_with_range
+    render_html '<div id="1"></div>'
+    assert_raises(ArgumentError) { assert_not_select "div", 1..5 }
+  end
+
+  def test_not_select_with_count
+    render_html '<div id="1"></div>'
+    assert_raises(ArgumentError) { assert_not_select "div", count: 1 }
+  end
+
+  def test_not_select_with_minimum
+    render_html '<div id="1"></div>'
+    assert_raises(ArgumentError) { assert_not_select "div", minimum: 1 }
+  end
+
+  def test_not_select_with_maximum
+    render_html '<div id="1"></div>'
+    assert_raises(ArgumentError) { assert_not_select "div", maximum: 1 }
   end
 
   #
