@@ -131,6 +131,11 @@ module Rails
                 else
                   comparisons[:minimum] ||= 1
                 end
+
+                if comparisons[:minimum] && comparisons[:maximum] && comparisons[:minimum] > comparisons[:maximum]
+                  raise ArgumentError, "Range begin or :minimum cannot be greater than Range end or :maximum"
+                end
+
                 comparisons
               end
           end
