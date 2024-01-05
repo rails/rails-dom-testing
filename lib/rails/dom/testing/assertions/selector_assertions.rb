@@ -196,11 +196,19 @@ module Rails
               return
             end
 
+            count, max = selector.tests.slice(:count, :maximum).values
+
             selector.select.tap do |matches|
               assert_size_match!(matches.size, selector.tests,
                 selector.css_selector, selector.message)
 
-              nest_selection(matches, &block) if block_given? && !matches.empty?
+              if block_given?
+                if count&.zero? || max&.zero?
+                  raise ArgumentError, "Cannot be called with a block when asserting that a selector does not match"
+                end
+
+                nest_selection(matches, &block) unless matches.empty?
+              end
             end
           end
 

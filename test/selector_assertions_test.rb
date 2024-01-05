@@ -122,6 +122,19 @@ class AssertSelectTest < ActiveSupport::TestCase
     end
   end
 
+  def test_zero_counts_with_block
+    render_html "<div>foo</div>"
+
+    errors = [
+      assert_raises(ArgumentError) { assert_select("p", false) { nil } },
+      assert_raises(ArgumentError) { assert_select("p", 0) { nil } },
+      assert_raises(ArgumentError) { assert_select("p", count: 0) { nil } },
+      assert_raises(ArgumentError) { assert_select("p", 0..0) { nil } },
+      assert_raises(ArgumentError) { assert_select("p", minimum: 0, maximum: 0) { nil } }
+    ]
+    assert_equal ["Cannot be called with a block when asserting that a selector does not match"], errors.map(&:message).uniq
+  end
+
   def test_substitution_values
     render_html '<div id="1">foo</div><div id="2">foo</div>'
     assert_select "div:match('id', ?)", /\d+/ do |elements|
@@ -214,46 +227,59 @@ class AssertSelectTest < ActiveSupport::TestCase
   # Test assert_not_select.
   #
 
-  def test_not_select
+  def test_assert_not_select
     render_html '<div id="1"></div>'
     assert_not_select "p"
     assert_failure(/Expected exactly 0 elements matching "div", found 1/) { assert_not_select "div" }
     assert_failure(/Expected exactly 0 elements matching "div#1", found 1/) { assert_not_select "div#1" }
   end
 
-  def test_not_select_with_true
+  def test_assert_not_select_with_true
     render_html '<div id="1"></div>'
-    assert_raises(ArgumentError) { assert_not_select "div", true }
+    error = assert_raises(ArgumentError) { assert_not_select "div", true }
+    assert_equal "Cannot use true, false, Integer, Range, :count, :minimum and :maximum when asserting that a selector does not match", error.message
   end
 
-  def test_not_select_with_false
+  def test_assert_not_select_with_false
     render_html '<div id="1"></div>'
-    assert_raises(ArgumentError) { assert_not_select "div", false }
+    error = assert_raises(ArgumentError) { assert_not_select "div", false }
+    assert_equal "Cannot use true, false, Integer, Range, :count, :minimum and :maximum when asserting that a selector does not match", error.message
   end
 
-  def test_not_select_with_integer
+  def test_assert_not_select_with_integer
     render_html '<div id="1"></div>'
-    assert_raises(ArgumentError) { assert_not_select "div", 1 }
+    error = assert_raises(ArgumentError) { assert_not_select "div", 1 }
+    assert_equal "Cannot use true, false, Integer, Range, :count, :minimum and :maximum when asserting that a selector does not match", error.message
   end
 
-  def test_not_select_with_range
+  def test_assert_not_select_with_range
     render_html '<div id="1"></div>'
-    assert_raises(ArgumentError) { assert_not_select "div", 1..5 }
+    error = assert_raises(ArgumentError) { assert_not_select "div", 1..5 }
+    assert_equal "Cannot use true, false, Integer, Range, :count, :minimum and :maximum when asserting that a selector does not match", error.message
   end
 
-  def test_not_select_with_count
+  def test_assert_not_select_with_count
     render_html '<div id="1"></div>'
-    assert_raises(ArgumentError) { assert_not_select "div", count: 1 }
+    error = assert_raises(ArgumentError) { assert_not_select "div", count: 1 }
+    assert_equal "Cannot use true, false, Integer, Range, :count, :minimum and :maximum when asserting that a selector does not match", error.message
   end
 
-  def test_not_select_with_minimum
+  def test_assert_not_select_with_minimum
     render_html '<div id="1"></div>'
-    assert_raises(ArgumentError) { assert_not_select "div", minimum: 1 }
+    error = assert_raises(ArgumentError) { assert_not_select "div", minimum: 1 }
+    assert_equal "Cannot use true, false, Integer, Range, :count, :minimum and :maximum when asserting that a selector does not match", error.message
   end
 
-  def test_not_select_with_maximum
+  def test_assert_not_select_with_maximum
     render_html '<div id="1"></div>'
-    assert_raises(ArgumentError) { assert_not_select "div", maximum: 1 }
+    error = assert_raises(ArgumentError) { assert_not_select "div", maximum: 1 }
+    assert_equal "Cannot use true, false, Integer, Range, :count, :minimum and :maximum when asserting that a selector does not match", error.message
+  end
+
+  def test_assert_not_select_with_block
+    render_html "<div>foo</div>"
+    error = assert_raises(ArgumentError) { assert_not_select("p") { nil } }
+    assert_equal "Cannot be called with a block when asserting that a selector does not match", error.message
   end
 
   #
