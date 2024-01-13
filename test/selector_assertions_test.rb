@@ -223,6 +223,20 @@ class AssertSelectTest < ActiveSupport::TestCase
     end
   end
 
+  def test_assert_select_with_invalid_range
+    render_html "<div>foo</div>"
+    error = assert_raises(ArgumentError) { assert_select("div", 2..1) { nil } }
+    assert_equal "Range begin or :minimum cannot be greater than Range end or :maximum", error.message
+  end
+
+  def test_assert_select_with_invalid_minimum_and_maximum
+    render_html "<div>foo</div>"
+    error = assert_raises(ArgumentError) { assert_select("div", maximum: 0) { nil } }
+    assert_equal "Range begin or :minimum cannot be greater than Range end or :maximum", error.message
+    error = assert_raises(ArgumentError) { assert_select("div", minimum: 2, maximum: 1) { nil } }
+    assert_equal "Range begin or :minimum cannot be greater than Range end or :maximum", error.message
+  end
+
   #
   # Test assert_not_select.
   #
