@@ -4,7 +4,8 @@ source "https://rubygems.org"
 
 gem "activesupport", "~> 7.0.0"
 
-gem "nokogiri", ">= 1.7.0"
-gem "mutex_m" # for ruby 3.4.0-dev
+gem "mutex_m" # for ruby 3.4.0
+gem "drb" # for ruby 3.4.0
+gem "concurrent-ruby", "1.3.4" # to avoid the logger issue
 
 gemspec path: "../"
