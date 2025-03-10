@@ -237,6 +237,66 @@ class AssertSelectTest < ActiveSupport::TestCase
     assert_equal "Range begin or :minimum cannot be greater than Range end or :maximum", error.message
   end
 
+  def test_assert_select_not_strict_collapses_whitespace
+    render_html "<p>Some\n   line-broken\n   text</p>"
+
+    assert_nothing_raised do
+      assert_select "p", {
+        text: "Some line-broken text",
+        strict: false
+      }, "Whitespace was not collapsed from text when not strict"
+
+      assert_select "p", {
+        html: "Some line-broken text",
+        strict: false
+      }, "Whitespace was not collapsed from html when not strict"
+    end
+
+    render_html "<p>Some<br><br>line-broken<br><br>text</p>"
+
+    assert_nothing_raised do
+      assert_select "p", {
+        text: "Someline-brokentext",
+        strict: false
+      }, "<br> was not removed from text when not strict"
+
+      assert_select "p", {
+        html: "Some<br><br>line-broken<br><br>text",
+        strict: false
+      }, "<br> was removed from html when not strict"
+    end
+  end
+
+  def test_assert_select_strict_respects_whitespace
+    render_html "<p>Some\n   line-broken\n   text</p>"
+
+    assert_nothing_raised do
+      assert_select "p", {
+        text: "Some\n   line-broken\n   text",
+        strict: true
+      }, "Whitespace was collapsed from text when strict"
+
+      assert_select "p", {
+        html: "Some\n   line-broken\n   text",
+        strict: true
+      }, "Whitespace was collapsed from html when strict"
+    end
+
+    render_html "<p>Some<br><br>line-broken<br><br>text</p>"
+
+    assert_nothing_raised do
+      assert_select "p", {
+        text: "Someline-brokentext",
+        strict: true
+      }, "<br> was not removed from text when strict"
+
+      assert_select "p", {
+        html: "Some<br><br>line-broken<br><br>text",
+        strict: true
+      }, "<br> was removed from html when strict"
+    end
+  end
+
   #
   # Test assert_not_select.
   #
