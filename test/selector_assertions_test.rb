@@ -237,6 +237,42 @@ class AssertSelectTest < ActiveSupport::TestCase
     assert_equal "Range begin or :minimum cannot be greater than Range end or :maximum", error.message
   end
 
+  def test_assert_select_text_equality_collapses_whitespace
+    render_html "<p>Some\n   line-broken\n   text</p>"
+
+    assert_nothing_raised do
+      assert_select "p", {
+        text: "Some line-broken text",
+      }, "Whitespace was not collapsed from text"
+    end
+
+    render_html "<p>Some<br><br>line-broken<br><br>text</p>"
+
+    assert_nothing_raised do
+      assert_select "p", {
+        text: "Someline-brokentext",
+      }, "<br> was not removed from text"
+    end
+  end
+
+  def test_assert_select_html_equality_respects_whitespace
+    render_html "<p>Some\n   line-broken\n   text</p>"
+
+    assert_nothing_raised do
+      assert_select "p", {
+        html: "Some\n   line-broken\n   text",
+      }, "Whitespace was collapsed from html"
+    end
+
+    render_html "<p>Some<br><br>line-broken<br><br>text</p>"
+
+    assert_nothing_raised do
+      assert_select "p", {
+        html: "Some<br><br>line-broken<br><br>text",
+      }, "<br> was removed from html"
+    end
+  end
+
   #
   # Test assert_not_select.
   #
