@@ -56,7 +56,7 @@ jobs:
           - { activesupport: "7.0", ruby: "3.1" }
           - { activesupport: "7.0", ruby: "3.2" }
           - { activesupport: "7.0", ruby: "3.3" }
-          - { activesupport: "7.0", ruby: "ruby-head" }
+          - { activesupport: "7.0", ruby: "3.4" }
           - { activesupport: "7.0", ruby: "jruby" }
           # rails 7.1
           - { activesupport: "7.1", ruby: "2.7" }
@@ -64,12 +64,25 @@ jobs:
           - { activesupport: "7.1", ruby: "3.1" }
           - { activesupport: "7.1", ruby: "3.2" }
           - { activesupport: "7.1", ruby: "3.3" }
-          - { activesupport: "7.1", ruby: "ruby-head" }
+          - { activesupport: "7.1", ruby: "3.4" }
           - { activesupport: "7.1", ruby: "jruby" }
           # rails 7.2
-          - { activesupport: "edge", ruby: "3.1" }
+          - { activesupport: "7.2", ruby: "3.1" }
+          - { activesupport: "7.2", ruby: "3.2" }
+          - { activesupport: "7.2", ruby: "3.3" }
+          - { activesupport: "7.2", ruby: "3.4" }
+          - { activesupport: "7.2", ruby: "ruby-head" }
+          - { activesupport: "7.2", ruby: "jruby" }
+          # rails 8.0
+          - { activesupport: "8.0", ruby: "3.2" }
+          - { activesupport: "8.0", ruby: "3.3" }
+          - { activesupport: "8.0", ruby: "3.4" }
+          - { activesupport: "8.0", ruby: "ruby-head" }
+          - { activesupport: "8.0", ruby: "jruby" }
+          # rails 8.1
           - { activesupport: "edge", ruby: "3.2" }
           - { activesupport: "edge", ruby: "3.3" }
+          - { activesupport: "edge", ruby: "3.4" }
           - { activesupport: "edge", ruby: "ruby-head" }
           - { activesupport: "edge", ruby: "jruby" }
     env:
