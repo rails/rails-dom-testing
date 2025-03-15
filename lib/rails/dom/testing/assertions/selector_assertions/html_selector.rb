@@ -18,6 +18,7 @@ module Rails
               @values = values
               @root = extract_root(previous_selection, root_fallback)
               extract_selectors
+              @strict = false
               @tests = extract_equality_tests(refute)
               @message = @values.shift
 
@@ -59,6 +60,7 @@ module Rails
 
                   content.strip! unless NO_STRIP.include?(match.name)
                   content.delete_prefix!("\n") if text_matches && match.name == "textarea"
+                  collapse_html_whitespace!(content) unless NO_STRIP.include?(match.name) || @strict
 
                   next if regex_matching ? (content =~ match_with) : (content == match_with)
                   content_mismatch ||= diff(match_with, content)
@@ -136,7 +138,13 @@ module Rails
                   raise ArgumentError, "Range begin or :minimum cannot be greater than Range end or :maximum"
                 end
 
+                @strict = comparisons[:strict]
+
                 comparisons
+              end
+
+              def collapse_html_whitespace!(text)
+                text.gsub!(/\s+/, " ")
               end
           end
         end
