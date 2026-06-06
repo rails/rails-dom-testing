@@ -477,7 +477,8 @@ class AssertSelectTest < ActiveSupport::TestCase
 
   def test_body_not_present_in_empty_document
     render_html "<div></div>"
-    assert_select "body", 0
+    error = assert_raises(ArgumentError) { assert_select "body", 0 }
+    assert_equal "Assertions on body can only be for text or html", error.message
   end
 
   def test_body_class_can_be_tested
@@ -488,6 +489,17 @@ class AssertSelectTest < ActiveSupport::TestCase
   def test_body_class_can_be_tested_with_html
     render_html '<html><body class="foo"><div></div></body></html>'
     assert_select ".foo"
+  end
+
+  def test_assert_not_select_on_body_with_text
+    render_html "<div><p>foo</p><p>bar</p></div>"
+    assert_failure(/Expected exactly 0 elements matching "body", found 1/) { assert_not_select "body", "foobar" }
+    assert_failure(/Expected exactly 0 elements matching "body", found 1/) { assert_not_select "body", /foo/ }
+  end
+
+  def test_assert_not_select_on_body_with_html
+    render_html "<div>foo</div>"
+    assert_failure(/Expected exactly 0 elements matching "body", found 1/) { assert_not_select "body", { html: "<div>foo</div>" } }
   end
 
   def test_assert_select_with_extra_argument

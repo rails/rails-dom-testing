@@ -191,11 +191,7 @@ module Rails
           alias_method :refute_select, :assert_not_dom
 
           private def dom_assertions(selector, &block)
-            if selector.selecting_no_body?
-              assert true
-              return
-            end
-
+            selector.ensure_no_assertion_on_nokogiri_body!
             count, max = selector.tests.slice(:count, :maximum).values
 
             selector.select.tap do |matches|

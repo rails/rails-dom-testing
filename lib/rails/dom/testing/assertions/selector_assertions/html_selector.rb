@@ -30,10 +30,10 @@ module Rails
               end
             end
 
-            def selecting_no_body? # :nodoc:
-              # Nokogiri gives the document a body element. Which means we can't
-              # run an assertion expecting there to not be a body.
-              @selector == "body" && @tests[:count] == 0
+            def ensure_no_assertion_on_nokogiri_body! # :nodoc:
+              # Nokogiri gives the document a body element when missing
+              return unless @selector == "body" && (@tests.keys & [:text, :html]).none?
+              raise ArgumentError, "Assertions on body can only be for text or html"
             end
 
             def select
