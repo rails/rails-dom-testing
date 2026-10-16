@@ -111,6 +111,7 @@ module Rails
                 when Range
                   comparisons[:minimum] = comparator.begin
                   comparisons[:maximum] = comparator.end
+                  comparisons[:maximum] -= 1 if comparator.exclude_end? && comparisons[:maximum]
                 when FalseClass
                   comparisons[:count] = 0
                 when NilClass, TrueClass

@@ -102,6 +102,14 @@ class AssertSelectTest < ActiveSupport::TestCase
     assert_failure(/Expected between 3 and 4 elements matching "div", found 2/) do
       assert_select "div", 3..4
     end
+    assert_nothing_raised               { assert_select "div", 1...3 }
+    assert_nothing_raised               { assert_select "div", 2...3 }
+    assert_failure(/Expected at most 1 element matching "div", found 2/) do
+      assert_select "div", 1...2
+    end
+    assert_failure(/Expected between 3 and 4 elements matching "div", found 2/) do
+      assert_select "div", 3...5
+    end
     assert_nothing_raised               { assert_select "div", count: 2 }
     assert_failure(/Expected exactly 3 elements matching "div", found 2/) do
       assert_select "div", count: 3
