@@ -223,6 +223,12 @@ class AssertSelectTest < ActiveSupport::TestCase
     end
   end
 
+  def test_assert_select_text_mismatch_message_shows_first_mismatch
+    render_html "<p>foo</p><p>bar</p>"
+    assert_failure(%(Expected: "baz"\n  Actual: "foo".\nExpected 0 to be >= 1.)) { assert_select "p", text: "baz" }
+    assert_failure(%(Expected: "<em>baz</em>"\n  Actual: "foo".\nExpected 0 to be >= 1.)) { assert_select "p", html: "<em>baz</em>" }
+  end
+
   def test_assert_select_with_invalid_range
     render_html "<div>foo</div>"
     error = assert_raises(ArgumentError) { assert_select("div", 2..1) { nil } }
