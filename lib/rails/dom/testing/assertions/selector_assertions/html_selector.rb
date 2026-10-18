@@ -49,7 +49,7 @@ module Rails
                 match_with = tests[:text] || tests[:html]
                 return matches if matches.empty? || !match_with
 
-                content_mismatch = nil
+                first_mismatch = nil
                 text_matches = tests.has_key?(:text)
                 html_matches = tests.has_key?(:html)
                 regex_matching = match_with.is_a?(Regexp)
@@ -63,11 +63,11 @@ module Rails
                   collapse_html_whitespace!(content) unless NO_STRIP.include?(match.name) || html_matches
 
                   next if regex_matching ? (content =~ match_with) : (content == match_with)
-                  content_mismatch ||= diff(match_with, content)
+                  first_mismatch ||= content
                   true
                 end
 
-                @message ||= content_mismatch if remaining.empty?
+                @message ||= diff(match_with, first_mismatch) if remaining.empty?
                 Nokogiri::XML::NodeSet.new(matches.document, remaining)
               end
 
