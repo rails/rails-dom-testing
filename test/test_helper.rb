@@ -20,4 +20,17 @@ module DomTestingHelpers
       Rails::Dom::Testing.default_html_version = old_version
     end
   end
+
+  def without_html5_support
+    singleton = Rails::Dom::Testing.singleton_class
+    original = singleton.instance_method(:html5_support?)
+    singleton.remove_method(:html5_support?)
+    singleton.define_method(:html5_support?) { false }
+    begin
+      yield
+    ensure
+      singleton.remove_method(:html5_support?)
+      singleton.define_method(:html5_support?, original)
+    end
+  end
 end

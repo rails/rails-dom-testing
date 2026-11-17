@@ -192,7 +192,7 @@ class DomAssertionsHtmlParserSelectionTest < ActiveSupport::TestCase
   end
 
   test "raise NotImplementedError html5 when not supported" do
-    Rails::Dom::Testing.stub(:html5_support?, false) do
+    without_html5_support do
       with_default_html_version(:html5) do
         assert_raises(NotImplementedError) { assert_dom_equal("a", "b") }
         assert_raises(NotImplementedError) { assert_dom_equal("a", "b", html_version: :html5) }
