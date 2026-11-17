@@ -6,6 +6,12 @@ module Rails
       module Assertions
         module SelectorAssertions
           class SubstitutionContext # :nodoc:
+            # Nokogiri 1.19.5+ applies CSS escapes inside string arguments to
+            # custom pseudo-classes, so a Regexp's backslashes must be escaped
+            # to reach the matcher intact. Older versions pass them through.
+            CSS_STRING_ESCAPES = !Nokogiri::CSS.xpath_for(%q{a:match('x','\\\\')}).first.include?("\\\\")
+            private_constant :CSS_STRING_ESCAPES
+
             def initialize
               @substitute = "?"
             end
@@ -27,7 +33,9 @@ module Rails
                 if format_for_presentation
                   value.inspect # Avoid to_s so Regexps aren't put in quotes.
                 elsif value.is_a?(Regexp)
-                  "\"#{value}\""
+                  source = value.to_s
+                  source = source.gsub(/[\\"]/) { |char| "\\#{char}" } if CSS_STRING_ESCAPES
+                  "\"#{source}\""
                 else
                   value.to_s.inspect
                 end
